@@ -1,0 +1,49 @@
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Button,
+  Pressable,
+} from "react-native";
+import { useState } from "react";
+import React from "react";
+import { db } from "../firebase/firebase_config";
+import { setDoc, doc, getDoc } from "firebase/firestore/lite";
+
+export default function AddTitle() {
+  const [enteredTitle, setEnteredTitle] = useState("");
+
+  function titleInputHandler(enteredText) {
+    setEnteredTitle(enteredText);
+  }
+
+  const setData = async () => {
+    console.log("starting set Title");
+    const docRef = doc(db, "Dummy", enteredTitle);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      //name already exists so is invalid
+      console.log("Invalid name. Already in use.");
+      //TODO: add some sort of alert/popup in app
+    } else {
+      console.log("Adding new Title");
+      await setDoc(doc(db, "Dummy", enteredTitle), {
+        Title: enteredTitle,
+        id: enteredTitle, //might be bad but should work TODO: see what the key/id per item is for
+      });
+    }
+  };
+  return (
+    <View>
+      <Text>Add Title</Text>
+      <TextInput
+        placeholder="Title"
+        onChangeText={titleInputHandler}
+        value={enteredTitle}
+      />
+      <Button title="Enter" onPress={setData} />
+    </View>
+  );
+}
