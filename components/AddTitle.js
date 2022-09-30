@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import React from "react";
-import { db, auth } from "../firebase/firebase_config";
+import { db } from "../firebase/firebase_config";
 import {
   setDoc,
   doc,
@@ -16,7 +16,6 @@ import {
   collection,
   getDocs,
 } from "firebase/firestore/lite";
-import { onAuthStateChanged } from "firebase/auth";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
 
@@ -33,21 +32,6 @@ export default function AddTitle() {
       getAuthenticationInfo(setUserUID);
     }, [])
   );
-
-  // //TODO: repetitive function, there has to be a way to import/export/ use functions between files
-  // const getAuthenticationInfo = async () => {
-  //   console.log("getting user data!");
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       //user is signed in
-  //       console.log("user signed in. UID: " + user.uid);
-  //       setUserUID(user.uid);
-  //       return;
-  //     } else {
-  //       //not signed in which would not practically happen
-  //     }
-  //   });
-  // };
 
   // first check if the collection exists,
   //    -if it does then add to it

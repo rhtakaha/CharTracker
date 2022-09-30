@@ -52,11 +52,7 @@ export const getCharDetails = async (userUID, title, name, setDETAILS) => {
 
     if (docSnap.exists()) {
       console.log("Found the character details");
-      //DETAILS = docSnap.data();
       setDETAILS(docSnap.data());
-      //   console.log("char details:");
-      //   console.log(DETAILS);
-      //   console.log("testing: " + DETAILS.Name);
     } else {
       console.log("lost the character");
       //something went wrong

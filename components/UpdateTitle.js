@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { db, auth } from "../firebase/firebase_config";
+import React, { useState } from "react";
+import { db } from "../firebase/firebase_config";
 import {
   collection,
   getDocs,
@@ -11,10 +11,8 @@ import {
   where,
 } from "firebase/firestore/lite";
 import { useFocusEffect } from "@react-navigation/native";
-import { onAuthStateChanged } from "firebase/auth";
 import { getAuthenticationInfo } from "../shared";
 
-//var TITLEINFO = [];
 var ogDocRef = "";
 export default function UpdateTitle({ route, navigation }) {
   const { title } = route.params;
@@ -34,21 +32,6 @@ export default function UpdateTitle({ route, navigation }) {
     }, [])
   );
 
-  // //TODO: repetitive function, there has to be a way to import/export/ use functions between files
-  // const getAuthenticationInfo = async () => {
-  //   console.log("getting user data!");
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       //user is signed in
-  //       console.log("user signed in. UID: " + user.uid);
-  //       setUserUID(user.uid);
-  //       return;
-  //     } else {
-  //       //not signed in which would not practically happen
-  //     }
-  //   });
-  // };
-
   function newTitleInputHandler(enteredText) {
     setNewTitle(enteredText);
   }
@@ -57,7 +40,6 @@ export default function UpdateTitle({ route, navigation }) {
     if (userUID !== "") {
       console.log("starting to get the Title data from " + title);
 
-      ///turn into a reuseable function??
       const q = query(collection(db, userUID), where("Title", "==", title));
       const querySnapshot = await getDocs(q);
       var id = "";
@@ -71,7 +53,6 @@ export default function UpdateTitle({ route, navigation }) {
 
       if (docSnap.exists()) {
         console.log("Found the Title details");
-        //TITLEINFO = docSnap.data();
         setTITLEINFO(docSnap.data());
         console.log("Title details:");
         console.log(TITLEINFO);
@@ -85,8 +66,6 @@ export default function UpdateTitle({ route, navigation }) {
 
   const updateNewTitle = async () => {
     console.log("starting to update Title");
-    // const docRef = doc(db, "Dummy", newTitle);
-    // const docSnap = await getDoc(docRef);
 
     const q = query(collection(db, userUID), where("Title", "==", newTitle));
     const querySnapshot = await getDocs(q);
@@ -102,14 +81,6 @@ export default function UpdateTitle({ route, navigation }) {
       console.log("Updating " + ogDocRef + " and there it is");
       updateDoc(ogDocRef, { Title: newTitle });
     }
-    // if (docSnap.exists()) {
-    //   //name already exists so is invalid
-    //   console.log("Invalid name. Already in use.");
-    //   //TODO: add some sort of alert/popup in app
-    // } else {
-    //   console.log("Adding new Title");
-    //   updateDoc(ogDocRef, { Title: newTitle });
-    // }
 
     //take us out to the titles page
     navigation.navigate("Titles");

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
-import React, { useEffect, useState } from "react";
-import { db, auth } from "../firebase/firebase_config";
+import React, { useState } from "react";
+import { db } from "../firebase/firebase_config";
 import {
   collection,
   getDocs,
@@ -9,16 +9,12 @@ import {
   updateDoc,
   query,
   where,
-  DocumentReference,
 } from "firebase/firestore/lite";
 import { useFocusEffect } from "@react-navigation/native";
-import { onAuthStateChanged } from "firebase/auth";
 import { getAuthenticationInfo } from "../shared";
 import { getCharDetails } from "../shared";
 
-//var CHARINFO = [];
 var ogDocInfo = [];
-//var ogDocRef = "";
 export default function UpdateCharacter({ route, navigation }) {
   const { title, name } = route.params;
   const [newName, setNewName] = useState("");
@@ -35,7 +31,6 @@ export default function UpdateCharacter({ route, navigation }) {
   const [CHARINFO, setCHARINFO] = useState({});
 
   const [userUID, setUserUID] = useState("");
-  //const [ogDocRef, setOgDocRef] = useState(Object);
 
   function newNameInputHandler(updatedName) {
     setNewName(updatedName);
@@ -81,18 +76,12 @@ export default function UpdateCharacter({ route, navigation }) {
     setNewBio_Notes(updated);
   }
 
-  //   useEffect(() => {
-  //     getCharacterDetails();
-  //   });
-
   useFocusEffect(
     React.useCallback(() => {
       (async () => {
-        ogDocInfo = await getCharDetails(userUID, title, name, setCHARINFO);
+        ogDocInfo = await getCharDetails(userUID, title, name, setCHARINFO); //so that we wait to get the info we need for later
         console.log("ogDocInfo: " + ogDocInfo[0] + " and " + ogDocInfo[1]);
-      })(); /// THIS COULD BE A SOLUTION FOR
-
-      //getCharacterDetails();
+      })();
     }, [userUID])
   );
 
@@ -102,51 +91,17 @@ export default function UpdateCharacter({ route, navigation }) {
     }, [])
   );
 
-  //TODO: this method is virtually identical to the getCharDetails one in CharacterDetails.js, probably figure out a way to generalize and import
-  const getCharacterDetails = async () => {
-    if (userUID !== "") {
-      console.log("Getting character data for updating.");
-      const q = query(collection(db, userUID), where("Title", "==", title));
-      const querySnapshot = await getDocs(q);
-      var titleId = "";
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        titleId = doc.data().id;
-      });
-
-      const q2 = query(
-        collection(db, userUID, titleId, "Characters"),
-        where("Name", "==", name)
-      );
-      const querySnapshot2 = await getDocs(q2);
-      var charId = "";
-      querySnapshot2.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        charId = doc.data().id;
-      });
-
-      ogDocRef = doc(db, userUID, titleId, "Characters", charId);
-      const docSnap = await getDoc(ogDocRef);
-
-      if (docSnap.exists()) {
-        console.log("Found the character details");
-        //CHARINFO = docSnap.data();
-        setCHARINFO(docSnap.data());
-        console.log("char details:");
-        console.log(CHARINFO);
-        console.log("testing: " + CHARINFO.Name);
-      } else {
-        console.log("lost the character");
-        //something went wrong
-      }
-    }
-  };
+  useFocusEffect(
+    React.useCallback(() => {
+      prePopulate();
+    }, [CHARINFO])
+  );
 
   const updateChar = async () => {
     //only change the fields modified in this screen, leave the other(s) the same
     console.log("updating Character in " + title);
     var continueGoing = true;
-    if (newName !== "") {
+    if (newName !== CHARINFO.Name) {
       console.log("checking if the new name is valid " + newName);
       const queryTitleID = query(
         collection(db, userUID),
@@ -175,9 +130,10 @@ export default function UpdateCharacter({ route, navigation }) {
         }
       });
     }
+    console.log("GOING TO UPDATE");
     if (continueGoing) {
       //regardless of if a new name was given or not update anything if changed
-      console.log("ogDocInfo: " + ogDocInfo[0] + " and " + ogDocInfo[1]);
+      console.log("U P D A T I N G  T H E  D O C U M E N T");
       const ogDocRef = doc(
         db,
         userUID,
@@ -187,28 +143,41 @@ export default function UpdateCharacter({ route, navigation }) {
       );
       console.log("Updating " + ogDocRef + " and there it is");
       console.log("type of ogDocRef: " + typeof ogDocRef);
+      console.log("WEAPONS: " + newWeapons);
       updateDoc(ogDocRef, {
-        Name: newName === "" ? CHARINFO.Name : newName,
-        Profession: newProfession === "" ? CHARINFO.Profession : newProfession,
-        Allies: newAllies === "" ? CHARINFO.Allies : newAllies,
-        Enemies: newEnemies === "" ? CHARINFO.Enemies : newEnemies,
-        Associates: newAssociates === "" ? CHARINFO.Associates : newAssociates,
-        Weapons: newWeapons === "" ? CHARINFO.Weapons : newWeapons,
-        Vehicles_Mounts:
-          newVehicles_Mounts === ""
-            ? CHARINFO.Vehicles_Mounts
-            : newVehicles_Mounts,
-        Affiliation:
-          newAffiliation === "" ? CHARINFO.Affiliation : newAffiliation,
-        Abilities: newAbilities === "" ? CHARINFO.Abilities : newAbilities,
-        Race_People:
-          newRace_People === "" ? CHARINFO.Race_People : newRace_People,
-        Bio_Notes: newBio_Notes === "" ? CHARINFO.Bio_Notes : newBio_Notes,
+        Name: newName,
+        Profession: newProfession,
+        Allies: newAllies,
+        Enemies: newEnemies,
+        Associates: newAssociates,
+        Weapons: newWeapons,
+        Vehicles_Mounts: newVehicles_Mounts,
+        Affiliation: newAffiliation,
+        Abilities: newAbilities,
+        Race_People: newRace_People,
+        Bio_Notes: newBio_Notes,
       });
     }
 
     navigation.navigate("CharactersPage", { title: title });
   };
+
+  //put what has already been added into each field so user can truly update and not just overwrite
+  function prePopulate() {
+    console.log("PREPOPULATING");
+    console.log(CHARINFO);
+    setNewName(CHARINFO.Name);
+    setNewProfession(CHARINFO.Profession);
+    setNewAllies(CHARINFO.Allies);
+    setNewEnemies(CHARINFO.Enemies);
+    setNewAssociates(CHARINFO.Associates);
+    setNewWeapons(CHARINFO.Weapons);
+    setNewVehicles_Mounts(CHARINFO.Vehicles_Mounts);
+    setNewAffiliation(CHARINFO.Affiliation);
+    setNewAbilities(CHARINFO.Abilities);
+    setNewRace_People(CHARINFO.Race_People);
+    setNewBio_Notes(CHARINFO.Bio_Notes);
+  }
 
   return (
     <View>
@@ -228,12 +197,16 @@ export default function UpdateCharacter({ route, navigation }) {
         value={newProfession}
       />
       <TextInput
-        placeholder={CHARINFO.Allies === "" ? "Allies" : CHARINFO.Allies}
+        placeholder={
+          CHARINFO.Allies === "" ? "Allies" : "Allies: " + CHARINFO.Allies
+        }
         onChangeText={newAlliesInputHandler}
         value={newAllies}
       />
       <TextInput
-        placeholder={CHARINFO.Enemies === "" ? "Enemies" : CHARINFO.Enemies}
+        placeholder={
+          CHARINFO.Enemies === "" ? "Enemies" : "Enemies: " + CHARINFO.Enemies
+        }
         onChangeText={newEnemiesInputHandler}
         value={newEnemies}
       />
@@ -279,6 +252,7 @@ export default function UpdateCharacter({ route, navigation }) {
         onChangeText={newRace_PeopleInputHandler}
         value={newRace_People}
       />
+      {/*TODO: make it so long text is more readable as you enter it- PROBABLY ALSO APPLIES TO AddCharacter */}
       <TextInput
         placeholder={
           CHARINFO.Bio_Notes === "" ? "Bio/Notes" : CHARINFO.Bio_Notes
