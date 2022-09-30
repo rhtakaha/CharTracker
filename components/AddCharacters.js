@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
 import React from "react";
 import { useState } from "react";
-import { db } from "../firebase/firebase_config";
+import { db, auth } from "../firebase/firebase_config";
 import {
   setDoc,
   doc,
@@ -11,6 +11,8 @@ import {
   query,
   where,
 } from "firebase/firestore/lite";
+import { onAuthStateChanged } from "firebase/auth";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function AddCharacters({ route, navigation }) {
   const { title } = route.params;
@@ -26,6 +28,8 @@ export default function AddCharacters({ route, navigation }) {
   const [enteredAbilities, setEnteredAbilities] = useState("");
   const [enteredRace_People, setEnteredRace_People] = useState("");
   const [enteredBio_Notes, setEnteredBio_Notes] = useState("");
+
+  const [userUID, setUserUID] = useState("");
 
   function nameInputHandler(enteredText) {
     setEnteredName(enteredText);
@@ -71,17 +75,38 @@ export default function AddCharacters({ route, navigation }) {
     setEnteredBio_Notes(updated);
   }
 
+  useFocusEffect(
+    React.useCallback(() => {
+      getAuthenticationInfo();
+    }, [])
+  );
+
+  //TODO: repetitive function, there has to be a way to import/export/ use functions between files
+  const getAuthenticationInfo = async () => {
+    console.log("getting user data!");
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        //user is signed in
+        console.log("user signed in. UID: " + user.uid);
+        setUserUID(user.uid);
+        return;
+      } else {
+        //not signed in which would not practically happen
+      }
+    });
+  };
+
   const setChar = async () => {
     if (enteredName !== "") {
       console.log("starting set Character");
-      const q = query(collection(db, "Dummy"), where("Title", "==", title));
+      const q = query(collection(db, userUID), where("Title", "==", title));
       const querySnapshot = await getDocs(q);
       var titleId = "";
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         titleId = doc.data().id;
       });
-      const docRef = doc(db, "Dummy", titleId, "Characters", enteredName);
+      const docRef = doc(db, userUID, titleId, "Characters", enteredName);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
@@ -90,7 +115,7 @@ export default function AddCharacters({ route, navigation }) {
         //TODO: add some sort of alert/popup in app
       } else {
         console.log("Adding new Character");
-        await setDoc(doc(db, "Dummy", titleId, "Characters", enteredName), {
+        await setDoc(doc(db, userUID, titleId, "Characters", enteredName), {
           Name: enteredName,
           id: enteredName, //might be bad but should work TODO: see what the key/id per item is for
           Profession: enteredProfession,

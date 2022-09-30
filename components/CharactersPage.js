@@ -17,13 +17,15 @@ import {
 } from "firebase/firestore/lite";
 import CharacterItem from "./CharacterItem";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { db } from "../firebase/firebase_config";
+import { db, auth } from "../firebase/firebase_config";
 import { useFocusEffect } from "@react-navigation/native";
+import { onAuthStateChanged } from "firebase/auth";
 
 //var CHARS = [];
 export default function CharactersPage({ route, navigation }) {
   const { title } = route.params;
   const [CHARS, setCHARS] = useState({});
+  const [userUID, setUserUID] = useState("");
   // useLayoutEffect(() => {
   //   getChars();
   // }, []);
@@ -33,8 +35,30 @@ export default function CharactersPage({ route, navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       getChars();
+    }, [userUID])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getAuthenticationInfo();
+      //getTitles();
     }, [])
   );
+
+  //TODO: repetitive function, there has to be a way to import/export/ use functions between files
+  const getAuthenticationInfo = async () => {
+    console.log("getting user data!");
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        //user is signed in
+        console.log("user signed in. UID: " + user.uid);
+        setUserUID(user.uid);
+        return;
+      } else {
+        //not signed in which would not practically happen
+      }
+    });
+  };
 
   function goToCharDetails(givenName) {
     //passes the title and the character name onto details page
@@ -57,24 +81,26 @@ export default function CharactersPage({ route, navigation }) {
   //   console.log(CHARS);
   // };
   const getChars = async () => {
-    console.log("starting to get the data from " + title);
+    if (userUID !== "") {
+      console.log("starting to get the data from " + title);
 
-    const q = query(collection(db, "Dummy"), where("Title", "==", title));
-    const querySnapshot = await getDocs(q);
-    var id = "";
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      id = doc.data().id;
-    });
-    console.log("id: " + id);
+      const q = query(collection(db, userUID), where("Title", "==", title));
+      const querySnapshot = await getDocs(q);
+      var id = "";
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        id = doc.data().id;
+      });
+      console.log("id: " + id);
 
-    const dummyCol = collection(db, "Dummy");
-    const titleCol = collection(db, "Dummy", id, "Characters");
-    const titleSnapshot = await getDocs(titleCol);
-    //CHARS = titleSnapshot.docs.map((doc) => doc.data());
-    setCHARS(titleSnapshot.docs.map((doc) => doc.data()));
-    console.log("finished collecting data");
-    console.log(CHARS);
+      //const dummyCol = collection(db, "Dummy");
+      const titleCol = collection(db, userUID, id, "Characters");
+      const titleSnapshot = await getDocs(titleCol);
+      //CHARS = titleSnapshot.docs.map((doc) => doc.data());
+      setCHARS(titleSnapshot.docs.map((doc) => doc.data()));
+      console.log("finished collecting data");
+      console.log(CHARS);
+    }
   };
   return (
     <SafeAreaView style={styles.container}>

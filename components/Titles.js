@@ -9,11 +9,10 @@ import {
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { collection, getDocs, getDoc, doc } from "firebase/firestore/lite";
-import { db } from "../firebase/firebase_config";
+import { db, auth } from "../firebase/firebase_config";
 import TitleItem from "./TitleItem";
 import { useFocusEffect } from "@react-navigation/native";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase/firebase_config";
 
 // const DATA = [
 //   {

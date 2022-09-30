@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { db } from "../firebase/firebase_config";
+import { db, auth } from "../firebase/firebase_config";
 import {
   collection,
   getDocs,
@@ -11,6 +11,7 @@ import {
   where,
 } from "firebase/firestore/lite";
 import { useFocusEffect } from "@react-navigation/native";
+import { onAuthStateChanged } from "firebase/auth";
 
 //var TITLEINFO = [];
 var ogDocRef = "";
@@ -18,49 +19,66 @@ export default function UpdateTitle({ route, navigation }) {
   const { title } = route.params;
   const [newTitle, setNewTitle] = useState("");
   const [TITLEINFO, setTITLEINFO] = useState({});
+  const [userUID, setUserUID] = useState("");
 
-  // useLayoutEffect(() => {
-  //   getTitleDetails();
-  // }, []);
-
-  // useEffect(() => {
-  //   getTitleDetails();
-  // });
   useFocusEffect(
     React.useCallback(() => {
       getTitleDetails();
+    }, [userUID])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getAuthenticationInfo();
     }, [])
   );
+
+  //TODO: repetitive function, there has to be a way to import/export/ use functions between files
+  const getAuthenticationInfo = async () => {
+    console.log("getting user data!");
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        //user is signed in
+        console.log("user signed in. UID: " + user.uid);
+        setUserUID(user.uid);
+        return;
+      } else {
+        //not signed in which would not practically happen
+      }
+    });
+  };
 
   function newTitleInputHandler(enteredText) {
     setNewTitle(enteredText);
   }
 
   const getTitleDetails = async () => {
-    console.log("starting to get the Title data from " + title);
+    if (userUID !== "") {
+      console.log("starting to get the Title data from " + title);
 
-    ///turn into a function??
-    const q = query(collection(db, "Dummy"), where("Title", "==", title));
-    const querySnapshot = await getDocs(q);
-    var id = "";
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      id = doc.data().id;
-    });
-    console.log("id: " + id);
-    ogDocRef = doc(db, "Dummy", id);
-    const docSnap = await getDoc(ogDocRef);
+      ///turn into a reuseable function??
+      const q = query(collection(db, userUID), where("Title", "==", title));
+      const querySnapshot = await getDocs(q);
+      var id = "";
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        id = doc.data().id;
+      });
+      console.log("id: " + id);
+      ogDocRef = doc(db, userUID, id);
+      const docSnap = await getDoc(ogDocRef);
 
-    if (docSnap.exists()) {
-      console.log("Found the Title details");
-      //TITLEINFO = docSnap.data();
-      setTITLEINFO(docSnap.data());
-      console.log("Title details:");
-      console.log(TITLEINFO);
-      console.log("test: " + TITLEINFO.Title);
-    } else {
-      console.log("lost the Title");
-      //something went wrong
+      if (docSnap.exists()) {
+        console.log("Found the Title details");
+        //TITLEINFO = docSnap.data();
+        setTITLEINFO(docSnap.data());
+        console.log("Title details:");
+        console.log(TITLEINFO);
+        console.log("test: " + TITLEINFO.Title);
+      } else {
+        console.log("lost the Title");
+        //something went wrong
+      }
     }
   };
 
@@ -69,7 +87,7 @@ export default function UpdateTitle({ route, navigation }) {
     // const docRef = doc(db, "Dummy", newTitle);
     // const docSnap = await getDoc(docRef);
 
-    const q = query(collection(db, "Dummy"), where("Title", "==", newTitle));
+    const q = query(collection(db, userUID), where("Title", "==", newTitle));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       if (doc.exists()) {
