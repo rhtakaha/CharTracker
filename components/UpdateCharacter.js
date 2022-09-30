@@ -9,13 +9,16 @@ import {
   updateDoc,
   query,
   where,
+  DocumentReference,
 } from "firebase/firestore/lite";
 import { useFocusEffect } from "@react-navigation/native";
 import { onAuthStateChanged } from "firebase/auth";
 import { getAuthenticationInfo } from "../shared";
+import { getCharDetails } from "../shared";
 
 //var CHARINFO = [];
-var ogDocRef = "";
+var ogDocInfo = [];
+//var ogDocRef = "";
 export default function UpdateCharacter({ route, navigation }) {
   const { title, name } = route.params;
   const [newName, setNewName] = useState("");
@@ -32,6 +35,7 @@ export default function UpdateCharacter({ route, navigation }) {
   const [CHARINFO, setCHARINFO] = useState({});
 
   const [userUID, setUserUID] = useState("");
+  //const [ogDocRef, setOgDocRef] = useState(Object);
 
   function newNameInputHandler(updatedName) {
     setNewName(updatedName);
@@ -83,7 +87,12 @@ export default function UpdateCharacter({ route, navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      getCharacterDetails();
+      (async () => {
+        ogDocInfo = await getCharDetails(userUID, title, name, setCHARINFO);
+        console.log("ogDocInfo: " + ogDocInfo[0] + " and " + ogDocInfo[1]);
+      })(); /// THIS COULD BE A SOLUTION FOR
+
+      //getCharacterDetails();
     }, [userUID])
   );
 
@@ -92,21 +101,6 @@ export default function UpdateCharacter({ route, navigation }) {
       getAuthenticationInfo(setUserUID);
     }, [])
   );
-
-  // //TODO: repetitive function, there has to be a way to import/export/ use functions between files
-  // const getAuthenticationInfo = async () => {
-  //   console.log("getting user data!");
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       //user is signed in
-  //       console.log("user signed in. UID: " + user.uid);
-  //       setUserUID(user.uid);
-  //       return;
-  //     } else {
-  //       //not signed in which would not practically happen
-  //     }
-  //   });
-  // };
 
   //TODO: this method is virtually identical to the getCharDetails one in CharacterDetails.js, probably figure out a way to generalize and import
   const getCharacterDetails = async () => {
@@ -183,7 +177,16 @@ export default function UpdateCharacter({ route, navigation }) {
     }
     if (continueGoing) {
       //regardless of if a new name was given or not update anything if changed
+      console.log("ogDocInfo: " + ogDocInfo[0] + " and " + ogDocInfo[1]);
+      const ogDocRef = doc(
+        db,
+        userUID,
+        ogDocInfo[0],
+        "Characters",
+        ogDocInfo[1]
+      );
       console.log("Updating " + ogDocRef + " and there it is");
+      console.log("type of ogDocRef: " + typeof ogDocRef);
       updateDoc(ogDocRef, {
         Name: newName === "" ? CHARINFO.Name : newName,
         Profession: newProfession === "" ? CHARINFO.Profession : newProfession,
