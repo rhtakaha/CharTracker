@@ -20,6 +20,7 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import { db, auth } from "../firebase/firebase_config";
 import { useFocusEffect } from "@react-navigation/native";
 import { onAuthStateChanged } from "firebase/auth";
+import { getAuthenticationInfo } from "../shared";
 
 //var CHARS = [];
 export default function CharactersPage({ route, navigation }) {
@@ -40,25 +41,24 @@ export default function CharactersPage({ route, navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      getAuthenticationInfo();
-      //getTitles();
+      getAuthenticationInfo(setUserUID);
     }, [])
   );
 
-  //TODO: repetitive function, there has to be a way to import/export/ use functions between files
-  const getAuthenticationInfo = async () => {
-    console.log("getting user data!");
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        //user is signed in
-        console.log("user signed in. UID: " + user.uid);
-        setUserUID(user.uid);
-        return;
-      } else {
-        //not signed in which would not practically happen
-      }
-    });
-  };
+  // //TODO: repetitive function, there has to be a way to import/export/ use functions between files
+  // const getAuthenticationInfo = async () => {
+  //   console.log("getting user data!");
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       //user is signed in
+  //       console.log("user signed in. UID: " + user.uid);
+  //       setUserUID(user.uid);
+  //       return;
+  //     } else {
+  //       //not signed in which would not practically happen
+  //     }
+  //   });
+  // };
 
   function goToCharDetails(givenName) {
     //passes the title and the character name onto details page

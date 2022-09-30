@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore/lite";
 import { onAuthStateChanged } from "firebase/auth";
 import { useFocusEffect } from "@react-navigation/native";
+import { getAuthenticationInfo } from "../shared";
 
 export default function AddTitle() {
   const [enteredTitle, setEnteredTitle] = useState("");
@@ -29,24 +30,24 @@ export default function AddTitle() {
 
   useFocusEffect(
     React.useCallback(() => {
-      getAuthenticationInfo();
+      getAuthenticationInfo(setUserUID);
     }, [])
   );
 
-  //TODO: repetitive function, there has to be a way to import/export/ use functions between files
-  const getAuthenticationInfo = async () => {
-    console.log("getting user data!");
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        //user is signed in
-        console.log("user signed in. UID: " + user.uid);
-        setUserUID(user.uid);
-        return;
-      } else {
-        //not signed in which would not practically happen
-      }
-    });
-  };
+  // //TODO: repetitive function, there has to be a way to import/export/ use functions between files
+  // const getAuthenticationInfo = async () => {
+  //   console.log("getting user data!");
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       //user is signed in
+  //       console.log("user signed in. UID: " + user.uid);
+  //       setUserUID(user.uid);
+  //       return;
+  //     } else {
+  //       //not signed in which would not practically happen
+  //     }
+  //   });
+  // };
 
   // first check if the collection exists,
   //    -if it does then add to it

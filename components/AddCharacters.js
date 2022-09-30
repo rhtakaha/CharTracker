@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore/lite";
 import { onAuthStateChanged } from "firebase/auth";
 import { useFocusEffect } from "@react-navigation/native";
+import { getAuthenticationInfo } from "../shared";
 
 export default function AddCharacters({ route, navigation }) {
   const { title } = route.params;
@@ -77,24 +78,24 @@ export default function AddCharacters({ route, navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      getAuthenticationInfo();
+      getAuthenticationInfo(setUserUID);
     }, [])
   );
 
-  //TODO: repetitive function, there has to be a way to import/export/ use functions between files
-  const getAuthenticationInfo = async () => {
-    console.log("getting user data!");
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        //user is signed in
-        console.log("user signed in. UID: " + user.uid);
-        setUserUID(user.uid);
-        return;
-      } else {
-        //not signed in which would not practically happen
-      }
-    });
-  };
+  // //TODO: repetitive function, there has to be a way to import/export/ use functions between files
+  // const getAuthenticationInfo = async () => {
+  //   console.log("getting user data!");
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       //user is signed in
+  //       console.log("user signed in. UID: " + user.uid);
+  //       setUserUID(user.uid);
+  //       return;
+  //     } else {
+  //       //not signed in which would not practically happen
+  //     }
+  //   });
+  // };
 
   const setChar = async () => {
     if (enteredName !== "") {
