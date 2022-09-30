@@ -50,7 +50,6 @@ export default function Titles({ navigation }) {
 
       console.log("userID: " + userUID);
       const col = collection(db, userUID);
-      console.log("here");
       const colSnap = await getDocs(col);
       if (colSnap.docs.length != 0) {
         console.log("starting to get the data!");
@@ -98,8 +97,8 @@ export default function Titles({ navigation }) {
     }, [userUID])
   );
 
+  //TODO: repetitive function, there has to be a way to import/export/ use functions between files
   const getAuthenticationInfo = async () => {
-    //function getAuthenticationInfo() {
     console.log("getting user data!");
     onAuthStateChanged(auth, (user) => {
       if (user) {
