@@ -259,6 +259,7 @@ export default function UpdateCharacter({ route, navigation }) {
         }
         onChangeText={newBio_NotesInputHandler}
         value={newBio_Notes}
+        multiline={true}
       />
       <Button title="Submit" onPress={updateChar} />
       <Button
