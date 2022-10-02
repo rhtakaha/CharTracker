@@ -53,7 +53,7 @@ export default function CharacterDetails({ route, navigation }) {
       />
       <Button title="Delete Character" onPress={startConfirmationHandler} />
       <Confirmation
-        text="Are you sure you want to delete Character?"
+        text="Are you sure you want to delete this Character?"
         visible={confirmationIsVisible}
         onConfirm={deleteCharacter}
         onCancel={endConfirmationHandler}
