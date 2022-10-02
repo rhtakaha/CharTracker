@@ -52,7 +52,6 @@ export default function CharacterDetails({ route, navigation }) {
         }
       />
       <Button title="Delete Character" onPress={startConfirmationHandler} />
-      {/*TODO: Eventually should add a popup confirm probably with a modal*/}
       <Confirmation
         text="Are you sure you want to delete Character?"
         visible={confirmationIsVisible}
