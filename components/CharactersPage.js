@@ -21,12 +21,22 @@ import React, { useState } from "react";
 import { db } from "../firebase/firebase_config";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
+import Confirmation from "./Confirmation";
 
 var id = "";
 export default function CharactersPage({ route, navigation }) {
   const { title } = route.params;
   const [CHARS, setCHARS] = useState({});
   const [userUID, setUserUID] = useState("");
+  const [confirmationIsVisible, setConfirmationIsVisible] = useState(false);
+
+  function startConfirmationHandler() {
+    setConfirmationIsVisible(true);
+  }
+
+  function endConfirmationHandler() {
+    setConfirmationIsVisible(false);
+  }
 
   useFocusEffect(
     React.useCallback(() => {
@@ -106,8 +116,13 @@ export default function CharactersPage({ route, navigation }) {
         title="Update Title"
         onPress={() => navigation.navigate("UpdateTitle", { title: title })}
       />
-      <Button title="Delete Title" onPress={() => deleteTitle()} />{" "}
-      {/*TODO: Eventually should add a popup confirm */}
+      <Button title="Delete Title" onPress={startConfirmationHandler} />
+      <Confirmation
+        text="Are you sure you want to delete this Title?"
+        visible={confirmationIsVisible}
+        onConfirm={deleteTitle}
+        onCancel={endConfirmationHandler}
+      />
       <FlatList
         data={CHARS}
         renderItem={renderItem}

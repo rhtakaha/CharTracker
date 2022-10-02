@@ -5,12 +5,22 @@ import { getAuthenticationInfo } from "../shared";
 import { getCharDetails } from "../shared";
 import { deleteDoc, doc } from "firebase/firestore/lite";
 import { db } from "../firebase/firebase_config";
+import Confirmation from "./Confirmation";
 
 var docInfo = [];
 export default function CharacterDetails({ route, navigation }) {
   const { title, name } = route.params;
   const [DETAILS, setDETAILS] = useState({});
   const [userUID, setUserUID] = useState("");
+  const [confirmationIsVisible, setConfirmationIsVisible] = useState(false);
+
+  function startConfirmationHandler() {
+    setConfirmationIsVisible(true);
+  }
+
+  function endConfirmationHandler() {
+    setConfirmationIsVisible(false);
+  }
 
   useFocusEffect(
     React.useCallback(() => {
@@ -27,6 +37,11 @@ export default function CharacterDetails({ route, navigation }) {
     }, [])
   );
 
+  const deleteCharacter = async () => {
+    deleteDoc(doc(db, userUID, docInfo[0], "Characters", docInfo[1]));
+    navigation.navigate("CharactersPage", { title: title });
+  };
+
   return (
     <View>
       <Text>CharacterDetails</Text>
@@ -36,12 +51,13 @@ export default function CharacterDetails({ route, navigation }) {
           navigation.navigate("UpdateCharacter", { title: title, name: name })
         }
       />
-      <Button
-        title="Delete Character"
-        onPress={() => {
-          deleteDoc(doc(db, userUID, docInfo[0], "Characters", docInfo[1]));
-          navigation.navigate("CharactersPage", { title: title });
-        }}
+      <Button title="Delete Character" onPress={startConfirmationHandler} />
+      {/*TODO: Eventually should add a popup confirm probably with a modal*/}
+      <Confirmation
+        text="Are you sure you want to delete Character?"
+        visible={confirmationIsVisible}
+        onConfirm={deleteCharacter}
+        onCancel={endConfirmationHandler}
       />
       <Text>{"Name: " + DETAILS.Name}</Text>
       <Text>{"Profession: " + DETAILS.Profession}</Text>
