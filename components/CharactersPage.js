@@ -14,6 +14,7 @@ import {
   doc,
   query,
   where,
+  deleteDoc,
 } from "firebase/firestore/lite";
 import CharacterItem from "./CharacterItem";
 import React, { useState } from "react";
@@ -21,6 +22,7 @@ import { db } from "../firebase/firebase_config";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
 
+var id = "";
 export default function CharactersPage({ route, navigation }) {
   const { title } = route.params;
   const [CHARS, setCHARS] = useState({});
@@ -54,7 +56,7 @@ export default function CharactersPage({ route, navigation }) {
 
       const q = query(collection(db, userUID), where("Title", "==", title));
       const querySnapshot = await getDocs(q);
-      var id = "";
+      id = "";
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         id = doc.data().id;
@@ -69,6 +71,29 @@ export default function CharactersPage({ route, navigation }) {
       console.log(CHARS);
     }
   };
+
+  const deleteTitle = async () => {
+    //first check if the collection is empty, if so just delete
+    const col = collection(db, userUID, id, "Characters");
+    const colSnap = await getDocs(col);
+    if (colSnap.docs.length != 0) {
+      //if not then go through and delete each character one by one and finally the collection at the end
+      const titleCol = collection(db, userUID, id, "Characters");
+      const titleSnapshot = await getDocs(titleCol);
+      titleSnapshot.forEach((document) => {
+        var charId = document.data().id;
+        deleteDoc(doc(db, userUID, id, "Characters", charId));
+      });
+      //now delete the title itself
+      deleteDoc(doc(db, userUID, id));
+    } else {
+      //empty Title so simply delete
+      deleteDoc(doc(db, userUID, id));
+    }
+
+    navigation.navigate("Titles");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Text>CharactersPage</Text>
@@ -81,6 +106,8 @@ export default function CharactersPage({ route, navigation }) {
         title="Update Title"
         onPress={() => navigation.navigate("UpdateTitle", { title: title })}
       />
+      <Button title="Delete Title" onPress={() => deleteTitle()} />{" "}
+      {/*TODO: Eventually should add a popup confirm */}
       <FlatList
         data={CHARS}
         renderItem={renderItem}
