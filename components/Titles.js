@@ -6,6 +6,7 @@ import {
   StyleSheet,
   StatusBar,
   Button,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import { collection, getDocs, getDoc, doc } from "firebase/firestore/lite";
@@ -65,10 +66,20 @@ export default function Titles({ navigation }) {
     <SafeAreaView style={styles.container}>
       <Text>Titles</Text>
       <Button title="get Titles" onPress={getTitles} />
-      <Button
+      <View style={styles.buttonBody}>
+        <Pressable
+          android_ripple={{ color: "#dddddd" }}
+          onPress={() => navigation.navigate("AddTitles")}
+          style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+        >
+          <Text style={styles.buttonText}>Add a Title</Text>
+        </Pressable>
+      </View>
+
+      {/* <Button
         title="Add a Title"
         onPress={() => navigation.navigate("AddTitles")}
-      />
+      /> */}
       <FlatList
         data={DATA}
         renderItem={renderItem}
@@ -91,5 +102,17 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
+  },
+  pressedButton: {
+    opacity: 0.5,
+  },
+  buttonText: {
+    padding: 8,
+    alignSelf: "center",
+  },
+  buttonBody: {
+    margin: 9,
+    borderRadius: 6,
+    backgroundColor: "green",
   },
 });
