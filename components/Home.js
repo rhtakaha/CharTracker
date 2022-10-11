@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput } from "react-native";
+import { View, Text, Button, TextInput, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { auth } from "../firebase/firebase_config";
 import {
@@ -42,18 +42,19 @@ export default function Home({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Home Screen 2</Text>
+    <View style={styles.container}>
       <TextInput
         placeholder="email"
         value={email}
         onChangeText={(text) => setEmail(text)}
+        style={styles.inputs}
       />
       <TextInput
         placeholder="password"
         value={password}
         onChangeText={(text) => setPassword(text)}
         secureTextEntry={true}
+        style={styles.inputs}
       />
       <Button title="Register" onPress={registerUser} />
       {isSignedIn === true ? (
@@ -68,3 +69,15 @@ export default function Home({ navigation }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#003B46",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inputs: {
+    color: "white",
+  },
+});

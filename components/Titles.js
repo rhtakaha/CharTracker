@@ -64,8 +64,7 @@ export default function Titles({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Titles</Text>
-      <Button title="get Titles" onPress={getTitles} />
+      {/* <Button title="get Titles" onPress={getTitles} /> */}
       <View style={styles.buttonBody}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}
@@ -92,7 +91,7 @@ export default function Titles({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    backgroundColor: "#003B46",
   },
   item: {
     backgroundColor: "#f9c2ff",
@@ -109,10 +108,11 @@ const styles = StyleSheet.create({
   buttonText: {
     padding: 8,
     alignSelf: "center",
+    color: "white",
   },
   buttonBody: {
     margin: 9,
     borderRadius: 6,
-    backgroundColor: "green",
+    backgroundColor: "#86ac41",
   },
 });

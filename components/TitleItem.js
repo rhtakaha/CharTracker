@@ -19,10 +19,10 @@ const styles = StyleSheet.create({
   titleItem: {
     margin: 9,
     borderRadius: 6,
-    backgroundColor: "#5e0acc",
+    backgroundColor: "#66A5AD",
   },
   titleText: {
-    color: "white",
+    color: "black",
     padding: 8,
   },
   pressedItem: {

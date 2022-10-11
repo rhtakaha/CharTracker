@@ -40,15 +40,111 @@ export default function App() {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{ title: "Overview" }}
+          options={{
+            headerStyle: {
+              backgroundColor: "#07575B",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
         />
-        <Stack.Screen name="Titles" component={Titles} />
-        <Stack.Screen name="AddTitles" component={AddTitle} />
-        <Stack.Screen name="CharactersPage" component={CharactersPage} />
-        <Stack.Screen name="AddCharacters" component={AddCharacters} />
-        <Stack.Screen name="CharacterDetails" component={CharactersDetails} />
-        <Stack.Screen name="UpdateTitle" component={UpdateTitle} />
-        <Stack.Screen name="UpdateCharacter" component={UpdateCharacter} />
+        <Stack.Screen
+          name="Titles"
+          component={Titles}
+          options={{
+            headerStyle: {
+              backgroundColor: "#07575B",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+        />
+        <Stack.Screen
+          name="AddTitles"
+          component={AddTitle}
+          options={{
+            headerStyle: {
+              backgroundColor: "#07575B",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+        />
+        <Stack.Screen
+          name="CharactersPage"
+          component={CharactersPage}
+          options={({ route }) => ({
+            title: route.params.title,
+            headerStyle: {
+              backgroundColor: "#07575B",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          })}
+        />
+        <Stack.Screen
+          name="AddCharacters"
+          component={AddCharacters}
+          options={{
+            headerStyle: {
+              backgroundColor: "#07575B",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+        />
+        <Stack.Screen
+          name="CharacterDetails"
+          component={CharactersDetails}
+          options={({ route }) => ({
+            title: route.params.name,
+            headerStyle: {
+              backgroundColor: "#07575B",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          })}
+        />
+        <Stack.Screen
+          name="UpdateTitle"
+          component={UpdateTitle}
+          options={({ route }) => ({
+            title: route.params.title,
+            headerStyle: {
+              backgroundColor: "#07575B",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          })}
+        />
+        <Stack.Screen
+          name="UpdateCharacter"
+          component={UpdateCharacter}
+          options={({ route }) => ({
+            title: route.params.name,
+            headerStyle: {
+              backgroundColor: "#07575B",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          })}
+        />
       </Stack.Navigator>
       {/* <View style={styles.container}>
         <Text>Open up App.js to start working on your app! fr fr?</Text>
