@@ -50,19 +50,25 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        placeholder="email"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        style={styles.inputs}
-      />
-      <TextInput
-        placeholder="password"
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        secureTextEntry={true}
-        style={styles.inputs}
-      />
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="email"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          style={styles.inputs}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="password"
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          secureTextEntry={true}
+          style={styles.inputs}
+        />
+      </View>
+
       {/* <Button title="Register" onPress={registerUser} /> */}
       <View style={styles.registerButtonBody}>
         <Pressable
@@ -121,12 +127,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   inputs: {
-    color: "white",
+    color: "black",
+    fontSize: 20,
   },
   registerButtonBody: {
-    margin: 9,
+    margin: 5,
     borderRadius: 6,
-    backgroundColor: "#86ac41",
+    backgroundColor: "#4cb5f5",
   },
   pressedButton: {
     opacity: 0.5,
@@ -137,14 +144,14 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 20,
   },
-  signInButtonBody: { margin: 9, borderRadius: 6, backgroundColor: "#66A5AD" },
+  signInButtonBody: { margin: 5, borderRadius: 6, backgroundColor: "#4cb5f5" },
   signInButtonText: {
     padding: 8,
     alignSelf: "center",
     color: "black",
     fontSize: 20,
   },
-  signOutButtonBody: { margin: 9, borderRadius: 6, backgroundColor: "red" },
+  signOutButtonBody: { margin: 5, borderRadius: 6, backgroundColor: "red" },
   signOutButtonText: {
     padding: 8,
     alignSelf: "center",
@@ -152,7 +159,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   toTitlesButton: {
-    margin: 9,
+    margin: 5,
     borderRadius: 6,
     backgroundColor: "#4cb5f5",
   },
@@ -161,5 +168,12 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: "black",
     fontSize: 20,
+  },
+  inputContainer: {
+    backgroundColor: "white",
+    aspectRatio: 7,
+    margin: 5,
+    padding: 5,
+    borderRadius: 4,
   },
 });
