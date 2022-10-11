@@ -1,4 +1,11 @@
-import { View, Text, Button, TextInput, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  TextInput,
+  StyleSheet,
+  Pressable,
+} from "react-native";
 import React, { useState } from "react";
 import { auth } from "../firebase/firebase_config";
 import {
@@ -56,16 +63,52 @@ export default function Home({ navigation }) {
         secureTextEntry={true}
         style={styles.inputs}
       />
-      <Button title="Register" onPress={registerUser} />
+      {/* <Button title="Register" onPress={registerUser} /> */}
+      <View style={styles.registerButtonBody}>
+        <Pressable
+          android_ripple={{ color: "#dddddd" }}
+          onPress={registerUser}
+          style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+        >
+          <Text style={styles.registerButtonText}>Register</Text>
+        </Pressable>
+      </View>
       {isSignedIn === true ? (
-        <Button title="Sign Out" onPress={signOutUser} />
+        // <Button title="Sign Out" onPress={signOutUser} />
+        <View style={styles.signOutButtonBody}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={signOutUser}
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.signOutButtonText}>Sign Out</Text>
+          </Pressable>
+        </View>
       ) : (
-        <Button title="Sign In" onPress={signInUser} />
+        // <Button title="Sign In" onPress={signInUser} />
+        <View style={styles.signInButtonBody}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={signInUser}
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.signInButtonText}>Sign In</Text>
+          </Pressable>
+        </View>
       )}
-      <Button
+      {/* <Button
         title="Go to Titles"
         onPress={() => navigation.navigate("Titles")}
-      />
+      /> */}
+      <View style={styles.toTitlesButton}>
+        <Pressable
+          android_ripple={{ color: "#dddddd" }}
+          onPress={() => navigation.navigate("Titles")}
+          style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+        >
+          <Text style={styles.toTitlesButtonText}>Go To Titles</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -79,5 +122,44 @@ const styles = StyleSheet.create({
   },
   inputs: {
     color: "white",
+  },
+  registerButtonBody: {
+    margin: 9,
+    borderRadius: 6,
+    backgroundColor: "#86ac41",
+  },
+  pressedButton: {
+    opacity: 0.5,
+  },
+  registerButtonText: {
+    padding: 8,
+    alignSelf: "center",
+    color: "black",
+    fontSize: 20,
+  },
+  signInButtonBody: { margin: 9, borderRadius: 6, backgroundColor: "#66A5AD" },
+  signInButtonText: {
+    padding: 8,
+    alignSelf: "center",
+    color: "black",
+    fontSize: 20,
+  },
+  signOutButtonBody: { margin: 9, borderRadius: 6, backgroundColor: "red" },
+  signOutButtonText: {
+    padding: 8,
+    alignSelf: "center",
+    color: "black",
+    fontSize: 20,
+  },
+  toTitlesButton: {
+    margin: 9,
+    borderRadius: 6,
+    backgroundColor: "#4cb5f5",
+  },
+  toTitlesButtonText: {
+    padding: 8,
+    alignSelf: "center",
+    color: "black",
+    fontSize: 20,
   },
 });
