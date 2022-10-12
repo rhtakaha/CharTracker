@@ -67,6 +67,7 @@ export default function App() {
           name="AddTitles"
           component={AddTitle}
           options={{
+            title: "Add Title",
             headerStyle: {
               backgroundColor: "#07575B",
             },
