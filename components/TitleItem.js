@@ -6,7 +6,7 @@ export default function TitleItem(props) {
     <View style={styles.titleItem}>
       <Pressable
         android_ripple={{ color: "#dddddd" }}
-        onPress={props.goToChars.bind(this, props.text)}
+        onPress={props.goToChars.bind(this, props.text, props.Id)}
         style={({ pressed }) => pressed && styles.pressedItem} //if true returns this styling
       >
         <Text style={styles.titleText}>{props.text}</Text>

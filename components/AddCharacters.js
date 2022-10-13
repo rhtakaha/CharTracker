@@ -15,7 +15,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
 
 export default function AddCharacters({ route, navigation }) {
-  const { title } = route.params;
+  const { title, titleId } = route.params;
 
   const [enteredName, setEnteredName] = useState("");
   const [enteredProfession, setEnteredProfession] = useState("");
@@ -84,13 +84,13 @@ export default function AddCharacters({ route, navigation }) {
   const setChar = async () => {
     if (enteredName !== "") {
       console.log("starting set Character");
-      const q = query(collection(db, userUID), where("Title", "==", title));
-      const querySnapshot = await getDocs(q);
-      var titleId = "";
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        titleId = doc.data().id;
-      });
+      // const q = query(collection(db, userUID), where("Title", "==", title));
+      // const querySnapshot = await getDocs(q);
+      // var titleId = "";
+      // querySnapshot.forEach((doc) => {
+      //   // doc.data() is never undefined for query doc snapshots
+      //   titleId = doc.data().id;
+      // });
       const docRef = doc(db, userUID, titleId, "Characters", enteredName);
       const docSnap = await getDoc(docRef);
 
@@ -118,7 +118,7 @@ export default function AddCharacters({ route, navigation }) {
     } else {
       console.log("NAME REQUIRED, NOT ENTERED");
     }
-    navigation.navigate("CharactersPage", { title: title }); //TODO: test this
+    navigation.navigate("CharactersPage", { title: title, titleId: titleId });
   };
 
   return (

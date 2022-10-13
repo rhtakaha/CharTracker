@@ -16,7 +16,7 @@ import { getCharDetails } from "../shared";
 
 var ogDocInfo = [];
 export default function UpdateCharacter({ route, navigation }) {
-  const { title, name } = route.params;
+  const { title, titleId, name } = route.params;
   const [newName, setNewName] = useState("");
   const [newProfession, setNewProfession] = useState("");
   const [newAllies, setNewAllies] = useState("");
@@ -79,7 +79,7 @@ export default function UpdateCharacter({ route, navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       (async () => {
-        ogDocInfo = await getCharDetails(userUID, title, name, setCHARINFO); //so that we wait to get the info we need for later
+        ogDocInfo = await getCharDetails(userUID, titleId, name, setCHARINFO); //so that we wait to get the info we need for later
         console.log("ogDocInfo: " + ogDocInfo[0] + " and " + ogDocInfo[1]);
       })();
     }, [userUID])
@@ -103,18 +103,18 @@ export default function UpdateCharacter({ route, navigation }) {
     var continueGoing = true;
     if (newName !== CHARINFO.Name) {
       console.log("checking if the new name is valid " + newName);
-      const queryTitleID = query(
-        collection(db, userUID),
-        where("Title", "==", title)
-      );
-      const titleSnapshot = await getDocs(queryTitleID);
-      var id = "";
-      titleSnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        id = doc.data().id;
-      });
+      // const queryTitleID = query(
+      //   collection(db, userUID),
+      //   where("Title", "==", title)
+      // );
+      // const titleSnapshot = await getDocs(queryTitleID);
+      // var id = "";
+      // titleSnapshot.forEach((doc) => {
+      //   // doc.data() is never undefined for query doc snapshots
+      //   id = doc.data().id;
+      // });
       const q = query(
-        collection(db, userUID, id, "Characters"),
+        collection(db, userUID, titleId, "Characters"),
         where("Name", "==", newName)
       );
 
@@ -159,7 +159,7 @@ export default function UpdateCharacter({ route, navigation }) {
       });
     }
 
-    navigation.navigate("CharactersPage", { title: title });
+    navigation.navigate("CharactersPage", { title: title, titleId: titleId });
   };
 
   //put what has already been added into each field so user can truly update and not just overwrite
@@ -265,7 +265,11 @@ export default function UpdateCharacter({ route, navigation }) {
       <Button
         title="Cancel"
         onPress={() =>
-          navigation.navigate("CharacterDetails", { title: title, name: name })
+          navigation.navigate("CharacterDetails", {
+            title: title,
+            titleId,
+            name: name,
+          })
         }
       />
     </View>

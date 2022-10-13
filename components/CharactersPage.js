@@ -24,9 +24,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
 import Confirmation from "./Confirmation";
 
-var id = "";
+//var id = "";
 export default function CharactersPage({ route, navigation }) {
-  const { title } = route.params;
+  const { title, titleId } = route.params;
   const [CHARS, setCHARS] = useState({});
   const [userUID, setUserUID] = useState("");
   const [confirmationIsVisible, setConfirmationIsVisible] = useState(false);
@@ -54,7 +54,11 @@ export default function CharactersPage({ route, navigation }) {
   function goToCharDetails(givenName) {
     //passes the title and the character name onto details page
     console.log(givenName);
-    navigation.navigate("CharacterDetails", { title: title, name: givenName });
+    navigation.navigate("CharacterDetails", {
+      title: title,
+      titleId: titleId,
+      name: givenName,
+    });
   }
 
   const renderItem = ({ item }) => (
@@ -65,16 +69,16 @@ export default function CharactersPage({ route, navigation }) {
     if (userUID !== "") {
       console.log("starting to get the data from " + title);
 
-      const q = query(collection(db, userUID), where("Title", "==", title));
-      const querySnapshot = await getDocs(q);
-      id = "";
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        id = doc.data().id;
-      });
-      console.log("id: " + id);
+      // const q = query(collection(db, userUID), where("Title", "==", title));
+      // const querySnapshot = await getDocs(q);
+      // id = "";
+      // querySnapshot.forEach((doc) => {
+      //   // doc.data() is never undefined for query doc snapshots
+      //   id = doc.data().id;
+      // });
+      // console.log("id: " + id);
 
-      const titleCol = collection(db, userUID, id, "Characters");
+      const titleCol = collection(db, userUID, titleId, "Characters");
       const titleSnapshot = await getDocs(titleCol);
 
       setCHARS(titleSnapshot.docs.map((doc) => doc.data()));
@@ -85,21 +89,21 @@ export default function CharactersPage({ route, navigation }) {
 
   const deleteTitle = async () => {
     //first check if the collection is empty, if so just delete
-    const col = collection(db, userUID, id, "Characters");
+    const col = collection(db, userUID, titleId, "Characters");
     const colSnap = await getDocs(col);
     if (colSnap.docs.length != 0) {
       //if not then go through and delete each character one by one and finally the collection at the end
-      const titleCol = collection(db, userUID, id, "Characters");
+      const titleCol = collection(db, userUID, titleId, "Characters");
       const titleSnapshot = await getDocs(titleCol);
       titleSnapshot.forEach((document) => {
         var charId = document.data().id;
-        deleteDoc(doc(db, userUID, id, "Characters", charId));
+        deleteDoc(doc(db, userUID, titleId, "Characters", charId));
       });
       //now delete the title itself
-      deleteDoc(doc(db, userUID, id));
+      deleteDoc(doc(db, userUID, titleId));
     } else {
       //empty Title so simply delete
-      deleteDoc(doc(db, userUID, id));
+      deleteDoc(doc(db, userUID, titleId));
     }
 
     navigation.navigate("Titles");
@@ -114,7 +118,12 @@ export default function CharactersPage({ route, navigation }) {
       <View style={styles.buttonContainer}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}
-          onPress={() => navigation.navigate("AddCharacters", { title: title })}
+          onPress={() =>
+            navigation.navigate("AddCharacters", {
+              title: title,
+              titleId: titleId,
+            })
+          }
           style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
         >
           <Text style={styles.buttonText}>Add Character</Text>
@@ -127,7 +136,12 @@ export default function CharactersPage({ route, navigation }) {
       <View style={styles.buttonContainer}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}
-          onPress={() => navigation.navigate("UpdateTitle", { title: title })}
+          onPress={() =>
+            navigation.navigate("UpdateTitle", {
+              title: title,
+              titleId: titleId,
+            })
+          }
           style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
         >
           <Text style={styles.buttonText}>Update Title</Text>

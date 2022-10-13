@@ -9,7 +9,7 @@ import Confirmation from "./Confirmation";
 
 var docInfo = [];
 export default function CharacterDetails({ route, navigation }) {
-  const { title, name } = route.params;
+  const { title, titleId, name } = route.params;
   const [DETAILS, setDETAILS] = useState({});
   const [userUID, setUserUID] = useState("");
   const [confirmationIsVisible, setConfirmationIsVisible] = useState(false);
@@ -26,7 +26,7 @@ export default function CharacterDetails({ route, navigation }) {
     React.useCallback(() => {
       //getCharDetails(userUID, title, name, setDETAILS);
       (async () => {
-        docInfo = await getCharDetails(userUID, title, name, setDETAILS); //so that we wait to get the info we need for later
+        docInfo = await getCharDetails(userUID, titleId, name, setDETAILS); //so that we wait to get the info we need for later
         console.log("docInfo: " + docInfo[0] + " and " + docInfo[1]);
       })();
     }, [userUID])
@@ -39,7 +39,7 @@ export default function CharacterDetails({ route, navigation }) {
 
   const deleteCharacter = async () => {
     deleteDoc(doc(db, userUID, docInfo[0], "Characters", docInfo[1]));
-    navigation.navigate("CharactersPage", { title: title });
+    navigation.navigate("CharactersPage", { title: title, titleId: titleId });
   };
 
   return (
@@ -48,7 +48,11 @@ export default function CharacterDetails({ route, navigation }) {
       <Button
         title="Update Character"
         onPress={() =>
-          navigation.navigate("UpdateCharacter", { title: title, name: name })
+          navigation.navigate("UpdateCharacter", {
+            title: title,
+            titleId: titleId,
+            name: name,
+          })
         }
       />
       <Button title="Delete Character" onPress={startConfirmationHandler} />

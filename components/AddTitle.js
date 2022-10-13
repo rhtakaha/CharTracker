@@ -15,9 +15,12 @@ import {
   getDoc,
   collection,
   getDocs,
+  query,
+  where,
 } from "firebase/firestore/lite";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
+var uuid = require("uuid");
 
 export default function AddTitle({ navigation }) {
   const [enteredTitle, setEnteredTitle] = useState("");
@@ -33,6 +36,21 @@ export default function AddTitle({ navigation }) {
     }, [])
   );
 
+  const isTitleIdUnique = async (db, userUID, newId) => {
+    const docRef = doc(db, userUID, newId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return false;
+    }
+    return true;
+  };
+
+  const isTitleUnique = async (userUID, title) => {
+    const q = query(collection(db, userUID), where("Title", "==", title));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.empty;
+  };
+
   // first check if the collection exists,
   //    -if it does then add to it
   //    -if not then make a collection and add the document
@@ -46,25 +64,44 @@ export default function AddTitle({ navigation }) {
     const colSnap = await getDocs(col);
     if (colSnap.docs.length != 0) {
       //the collection exists so add to it
-      const docRef = doc(db, userUID, enteredTitle);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        //name already exists so is invalid
+      if (!(await isTitleUnique(userUID, enteredTitle))) {
+        //if the entered title already exists block it
         console.log("Invalid name. Already in use.");
         //TODO: add some sort of alert/popup in app
       } else {
+        //keep generating ids until get a unique one (should be first time but to be sure)
+        let newId;
+        do {
+          newId = uuid.v4();
+        } while (!(await isTitleIdUnique(db, userUID, newId)));
+
+        //now that we have the id we can construct
         console.log("Adding new Title");
-        await setDoc(doc(db, userUID, enteredTitle), {
+        await setDoc(doc(db, userUID, newId), {
           Title: enteredTitle,
-          id: enteredTitle, //might be bad but should work TODO: see what the key/id per item is for
+          id: newId,
         });
       }
+      // const docRef = doc(db, userUID, enteredTitle);
+      // const docSnap = await getDoc(docRef);
+
+      // if (docSnap.exists()) {
+      //   //name already exists so is invalid
+      //   console.log("Invalid name. Already in use.");
+      //   //TODO: add some sort of alert/popup in app
+      // } else {
+      //   console.log("Adding new Title");
+      //   await setDoc(doc(db, userUID, enteredTitle), {
+      //     Title: enteredTitle,
+      //     id: enteredTitle, //might be bad but should work TODO: see what the key/id per item is for
+      //   });
+      // }
     } else {
       //the collection doesn't exist so make it and add the first title
-      await setDoc(doc(db, userUID, enteredTitle), {
+      const newId = uuid.v4();
+      await setDoc(doc(db, userUID, newId), {
         Title: enteredTitle,
-        id: enteredTitle, //might be bad but should work TODO: see what the key/id per item is for
+        id: newId,
       });
     }
     navigation.navigate("Titles");

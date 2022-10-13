@@ -15,7 +15,7 @@ import { getAuthenticationInfo } from "../shared";
 
 var ogDocRef = "";
 export default function UpdateTitle({ route, navigation }) {
-  const { title } = route.params;
+  const { title, titleId } = route.params;
   const [newTitle, setNewTitle] = useState("");
   const [TITLEINFO, setTITLEINFO] = useState({});
   const [userUID, setUserUID] = useState("");
@@ -40,15 +40,15 @@ export default function UpdateTitle({ route, navigation }) {
     if (userUID !== "") {
       console.log("starting to get the Title data from " + title);
 
-      const q = query(collection(db, userUID), where("Title", "==", title));
-      const querySnapshot = await getDocs(q);
-      var id = "";
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        id = doc.data().id;
-      });
-      console.log("id: " + id);
-      ogDocRef = doc(db, userUID, id);
+      // const q = query(collection(db, userUID), where("Title", "==", title));
+      // const querySnapshot = await getDocs(q);
+      // var id = "";
+      // querySnapshot.forEach((doc) => {
+      //   // doc.data() is never undefined for query doc snapshots
+      //   id = doc.data().id;
+      // });
+      // console.log("id: " + id);
+      ogDocRef = doc(db, userUID, titleId);
       const docSnap = await getDoc(ogDocRef);
 
       if (docSnap.exists()) {

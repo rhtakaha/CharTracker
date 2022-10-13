@@ -25,16 +25,16 @@ export const getAuthenticationInfo = async (setUserUID) => {
   });
 };
 
-export const getCharDetails = async (userUID, title, name, setDETAILS) => {
+export const getCharDetails = async (userUID, titleId, name, setDETAILS) => {
   if (userUID !== "") {
-    console.log("starting to get the data from " + title + " about " + name);
-    const q = query(collection(db, userUID), where("Title", "==", title));
-    const querySnapshot = await getDocs(q);
-    var titleId = "";
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      titleId = doc.data().id;
-    });
+    console.log("starting to get the data about " + name);
+    // const q = query(collection(db, userUID), where("Title", "==", title));
+    // const querySnapshot = await getDocs(q);
+    // var titleId = "";
+    // querySnapshot.forEach((doc) => {
+    //   // doc.data() is never undefined for query doc snapshots
+    //   titleId = doc.data().id;
+    // });
 
     const q2 = query(
       collection(db, userUID, titleId, "Characters"),

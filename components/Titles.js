@@ -19,12 +19,15 @@ export default function Titles({ navigation }) {
   const [DATA, setDATA] = useState({});
   const [userUID, setUserUID] = useState("");
 
-  function goToCharsPage(givenTitle) {
+  function goToCharsPage(givenTitle, givenId) {
     //function that takes
-    navigation.navigate("CharactersPage", { title: givenTitle });
+    navigation.navigate("CharactersPage", {
+      title: givenTitle,
+      titleId: givenId,
+    });
   }
   const renderItem = ({ item }) => (
-    <TitleItem text={item.Title} goToChars={goToCharsPage} />
+    <TitleItem text={item.Title} Id={item.id} goToChars={goToCharsPage} />
   );
 
   const getTitles = async () => {
