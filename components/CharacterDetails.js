@@ -9,7 +9,7 @@ import Confirmation from "./Confirmation";
 
 var docInfo = [];
 export default function CharacterDetails({ route, navigation }) {
-  const { title, titleId, name } = route.params;
+  const { title, titleId, charId } = route.params;
   const [DETAILS, setDETAILS] = useState({});
   const [userUID, setUserUID] = useState("");
   const [confirmationIsVisible, setConfirmationIsVisible] = useState(false);
@@ -26,7 +26,7 @@ export default function CharacterDetails({ route, navigation }) {
     React.useCallback(() => {
       //getCharDetails(userUID, title, name, setDETAILS);
       (async () => {
-        docInfo = await getCharDetails(userUID, titleId, name, setDETAILS); //so that we wait to get the info we need for later
+        docInfo = await getCharDetails(userUID, titleId, charId, setDETAILS); //so that we wait to get the info we need for later
         console.log("docInfo: " + docInfo[0] + " and " + docInfo[1]);
       })();
     }, [userUID])
@@ -51,7 +51,7 @@ export default function CharacterDetails({ route, navigation }) {
           navigation.navigate("UpdateCharacter", {
             title: title,
             titleId: titleId,
-            name: name,
+            charId: charId,
           })
         }
       />

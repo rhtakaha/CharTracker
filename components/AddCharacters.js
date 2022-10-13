@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore/lite";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
+var uuid = require("uuid");
 
 export default function AddCharacters({ route, navigation }) {
   const { title, titleId } = route.params;
@@ -81,6 +82,24 @@ export default function AddCharacters({ route, navigation }) {
     }, [])
   );
 
+  const isCharIdUnique = async (db, userUID, newId) => {
+    const docRef = doc(db, userUID, titleId, "Characters", newId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return false;
+    }
+    return true;
+  };
+
+  const isCharNameUnique = async (userUID, name) => {
+    const q = query(
+      collection(db, userUID, titleId, "Characters"),
+      where("Name", "==", name)
+    );
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.empty;
+  };
+
   const setChar = async () => {
     if (enteredName !== "") {
       console.log("starting set Character");
@@ -93,16 +112,22 @@ export default function AddCharacters({ route, navigation }) {
       // });
       const docRef = doc(db, userUID, titleId, "Characters", enteredName);
       const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        //name already exists so is invalid
+      if (!(await isCharNameUnique(userUID, enteredName))) {
+        //not unique name so block
         console.log("Invalid name. Already in use.");
-        //TODO: add some sort of alert/popup in app
       } else {
+        //valid name
+        //keep generating ids until get a unique one (should be first time but to be sure)
+        let newId;
+        do {
+          newId = uuid.v4();
+        } while (!(await isCharIdUnique(db, userUID, newId)));
+
+        //have the id so create the character
         console.log("Adding new Character");
-        await setDoc(doc(db, userUID, titleId, "Characters", enteredName), {
+        await setDoc(doc(db, userUID, titleId, "Characters", newId), {
           Name: enteredName,
-          id: enteredName, //might be bad but should work TODO: see what the key/id per item is for
+          id: newId,
           Profession: enteredProfession,
           Allies: enteredAllies,
           Enemies: enteredEnemies,
@@ -115,6 +140,28 @@ export default function AddCharacters({ route, navigation }) {
           Bio_Notes: enteredBio_Notes,
         });
       }
+
+      // if (docSnap.exists()) {
+      //   //name already exists so is invalid
+      //   console.log("Invalid name. Already in use.");
+      //   //TODO: add some sort of alert/popup in app
+      // } else {
+      //   console.log("Adding new Character");
+      //   await setDoc(doc(db, userUID, titleId, "Characters", enteredName), {
+      //     Name: enteredName,
+      //     id: enteredName, //might be bad but should work TODO: see what the key/id per item is for
+      //     Profession: enteredProfession,
+      //     Allies: enteredAllies,
+      //     Enemies: enteredEnemies,
+      //     Associates: enteredAssociates,
+      //     Weapons: enteredWeapons,
+      //     Vehicles_Mounts: enteredVehicle_Mounts,
+      //     Affiliation: enteredAffiliation,
+      //     Abilities: enteredAbilities,
+      //     Race_People: enteredRace_People,
+      //     Bio_Notes: enteredBio_Notes,
+      //   });
+      // }
     } else {
       console.log("NAME REQUIRED, NOT ENTERED");
     }
@@ -182,7 +229,12 @@ export default function AddCharacters({ route, navigation }) {
       <Button title="Submit" onPress={setChar} />
       <Button
         title="Cancel"
-        onPress={() => navigation.navigate("CharactersPage", { title: title })}
+        onPress={() =>
+          navigation.navigate("CharactersPage", {
+            title: title,
+            titleId: titleId,
+          })
+        }
       />
     </View>
   );

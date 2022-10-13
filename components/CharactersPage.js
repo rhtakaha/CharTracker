@@ -51,18 +51,21 @@ export default function CharactersPage({ route, navigation }) {
     }, [])
   );
 
-  function goToCharDetails(givenName) {
+  function goToCharDetails(givenId) {
     //passes the title and the character name onto details page
-    console.log(givenName);
     navigation.navigate("CharacterDetails", {
       title: title,
       titleId: titleId,
-      name: givenName,
+      charId: givenId,
     });
   }
 
   const renderItem = ({ item }) => (
-    <CharacterItem name={item.Name} goToDetails={goToCharDetails} />
+    <CharacterItem
+      name={item.Name}
+      charId={item.id}
+      goToDetails={goToCharDetails}
+    />
   );
 
   const getChars = async () => {

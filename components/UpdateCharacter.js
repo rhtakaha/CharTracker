@@ -16,7 +16,7 @@ import { getCharDetails } from "../shared";
 
 var ogDocInfo = [];
 export default function UpdateCharacter({ route, navigation }) {
-  const { title, titleId, name } = route.params;
+  const { title, titleId, charId } = route.params;
   const [newName, setNewName] = useState("");
   const [newProfession, setNewProfession] = useState("");
   const [newAllies, setNewAllies] = useState("");
@@ -79,7 +79,7 @@ export default function UpdateCharacter({ route, navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       (async () => {
-        ogDocInfo = await getCharDetails(userUID, titleId, name, setCHARINFO); //so that we wait to get the info we need for later
+        ogDocInfo = await getCharDetails(userUID, titleId, charId, setCHARINFO); //so that we wait to get the info we need for later
         console.log("ogDocInfo: " + ogDocInfo[0] + " and " + ogDocInfo[1]);
       })();
     }, [userUID])
@@ -267,8 +267,8 @@ export default function UpdateCharacter({ route, navigation }) {
         onPress={() =>
           navigation.navigate("CharacterDetails", {
             title: title,
-            titleId,
-            name: name,
+            titleId: titleId,
+            charId: charId,
           })
         }
       />
