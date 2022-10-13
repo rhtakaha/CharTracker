@@ -6,6 +6,7 @@ import {
   FlatList,
   StatusBar,
   Button,
+  Pressable,
 } from "react-native";
 import {
   collection,
@@ -106,22 +107,48 @@ export default function CharactersPage({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>CharactersPage</Text>
-      <Text>{title}</Text>
-      <Button
+      {/* <Button
         title="Add Character"
         onPress={() => navigation.navigate("AddCharacters", { title: title })}
-      />
-      <Button
+      /> */}
+      <View style={styles.buttonContainer}>
+        <Pressable
+          android_ripple={{ color: "#dddddd" }}
+          onPress={() => navigation.navigate("AddCharacters", { title: title })}
+          style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+        >
+          <Text style={styles.buttonText}>Add Character</Text>
+        </Pressable>
+      </View>
+      {/* <Button
         title="Update Title"
         onPress={() => navigation.navigate("UpdateTitle", { title: title })}
-      />
-      <Button title="Delete Title" onPress={startConfirmationHandler} />
+      /> */}
+      <View style={styles.buttonContainer}>
+        <Pressable
+          android_ripple={{ color: "#dddddd" }}
+          onPress={() => navigation.navigate("UpdateTitle", { title: title })}
+          style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+        >
+          <Text style={styles.buttonText}>Update Title</Text>
+        </Pressable>
+      </View>
+      {/* <Button title="Delete Title" onPress={startConfirmationHandler} /> */}
+      <View style={styles.buttonContainer}>
+        <Pressable
+          android_ripple={{ color: "#dddddd" }}
+          onPress={startConfirmationHandler}
+          style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+        >
+          <Text style={styles.buttonText}>Delete Title</Text>
+        </Pressable>
+      </View>
       <Confirmation
         text="Are you sure you want to delete this Title?"
         visible={confirmationIsVisible}
         onConfirm={deleteTitle}
         onCancel={endConfirmationHandler}
+        confirmColor={{ backgroundColor: "red" }}
       />
       <FlatList
         data={CHARS}
@@ -135,7 +162,7 @@ export default function CharactersPage({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    backgroundColor: "#003B46",
   },
   item: {
     backgroundColor: "#f9c2ff",
@@ -145,5 +172,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
+  },
+  pressedButton: {
+    opacity: 0.5,
+  },
+  buttonText: {
+    padding: 8,
+    alignSelf: "center",
+    color: "black",
+  },
+  buttonContainer: {
+    margin: 5,
+    borderRadius: 6,
+    backgroundColor: "#86ac41",
   },
 });

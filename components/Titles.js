@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   buttonText: {
     padding: 8,
     alignSelf: "center",
-    color: "white",
+    color: "black",
   },
   buttonBody: {
     margin: 9,

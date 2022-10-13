@@ -57,6 +57,7 @@ export default function CharacterDetails({ route, navigation }) {
         visible={confirmationIsVisible}
         onConfirm={deleteCharacter}
         onCancel={endConfirmationHandler}
+        confirmColor={{ backgroundColor: "red" }}
       />
       <Text>{"Name: " + DETAILS.Name}</Text>
       <Text>{"Profession: " + DETAILS.Profession}</Text>
