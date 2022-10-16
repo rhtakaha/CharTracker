@@ -23,7 +23,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
-import { async } from "@firebase/util";
 var uuid = require("uuid");
 
 export default function AddTitle({ navigation }) {
@@ -99,7 +98,7 @@ export default function AddTitle({ navigation }) {
 
   const uploadImage = async () => {
     const storage = getStorage();
-    console.log("created storage");
+    console.log("starting image upload\n");
     // Create a reference to where the image should go in firebase storage
     const imageRef = ref(storage, "some-child");
     console.log("references created");
@@ -142,10 +141,11 @@ export default function AddTitle({ navigation }) {
   //TODO: need this to be in the TitleItem page so need some way to pass references
   //TODO: also need to figure out the actualy "schema" of storage, probably add a folder per user - might make images a premium feature since it seems to be more data intensive, but hopefully not
   const downloadImage = async () => {
-    console.log("starting to download image");
+    console.log("starting to download image\n");
     const storage = getStorage();
     // Create a reference to the image in firebase storage
     const imageRef = ref(storage, "some-child");
+
     // let temp = getImage(imageRef);
     // console.log("temp: " + temp);
     // setRecImage(temp);
@@ -175,6 +175,7 @@ export default function AddTitle({ navigation }) {
     setRecImage(img);
     console.log("where 'image' is: " + image);
     console.log("should have the image: " + recImage);
+    Image.prefetch(recImage);
   };
 
   // first check if the collection exists,
@@ -203,9 +204,13 @@ export default function AddTitle({ navigation }) {
 
         //now that we have the id we can construct
         console.log("Adding new Title");
+        if (image !== null) {
+          await uploadImage();
+        }
         await setDoc(doc(db, userUID, newId), {
           Title: enteredTitle,
           id: newId,
+          image: image ? image : "",
         });
       }
       // const docRef = doc(db, userUID, enteredTitle);
@@ -225,9 +230,13 @@ export default function AddTitle({ navigation }) {
     } else {
       //the collection doesn't exist so make it and add the first title
       const newId = uuid.v4();
+      if (image !== null) {
+        await uploadImage();
+      }
       await setDoc(doc(db, userUID, newId), {
         Title: enteredTitle,
         id: newId,
+        image: image ? image : "",
       });
     }
     navigation.navigate("Titles");
