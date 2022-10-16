@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import React from "react";
 
 export default function TitleItem(props) {
@@ -9,7 +9,13 @@ export default function TitleItem(props) {
         onPress={props.goToChars.bind(this, props.text, props.Id)}
         style={({ pressed }) => pressed && styles.pressedItem} //if true returns this styling
       >
-        <Text style={styles.titleText}>{props.text}</Text>
+        <View style={styles.container}>
+          <Image
+            source={{ uri: props.image }}
+            style={{ width: 100, height: 100 }}
+          />
+          <Text style={styles.titleText}>{props.text}</Text>
+        </View>
       </Pressable>
     </View>
   );
@@ -27,5 +33,8 @@ const styles = StyleSheet.create({
   },
   pressedItem: {
     opacity: 0.5,
+  },
+  container: {
+    flexDirection: "row",
   },
 });

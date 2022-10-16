@@ -27,7 +27,12 @@ export default function Titles({ navigation }) {
     });
   }
   const renderItem = ({ item }) => (
-    <TitleItem text={item.Title} Id={item.id} goToChars={goToCharsPage} />
+    <TitleItem
+      text={item.Title}
+      Id={item.id}
+      image={item.image}
+      goToChars={goToCharsPage}
+    />
   );
 
   const getTitles = async () => {

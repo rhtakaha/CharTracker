@@ -96,11 +96,11 @@ export default function AddTitle({ navigation }) {
     }
   };
 
-  const uploadImage = async () => {
+  const uploadImage = async (newId) => {
     const storage = getStorage();
     console.log("starting image upload\n");
     // Create a reference to where the image should go in firebase storage
-    const imageRef = ref(storage, "some-child");
+    const imageRef = ref(storage, userUID + "/" + newId);
     console.log("references created");
     uploadBytes(imageRef, await uriToBlob(image)).then((snapshot) => {
       console.log("Uploaded a blob or file!");
@@ -205,7 +205,7 @@ export default function AddTitle({ navigation }) {
         //now that we have the id we can construct
         console.log("Adding new Title");
         if (image !== null) {
-          await uploadImage();
+          await uploadImage(newId);
         }
         await setDoc(doc(db, userUID, newId), {
           Title: enteredTitle,
