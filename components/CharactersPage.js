@@ -7,6 +7,7 @@ import {
   StatusBar,
   Button,
   Pressable,
+  Image,
 } from "react-native";
 import {
   collection,
@@ -23,6 +24,8 @@ import { db } from "../firebase/firebase_config";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
 import Confirmation from "./Confirmation";
+import { checkCached } from "../shared";
+import { downloadImage } from "../shared";
 
 //var id = "";
 export default function CharactersPage({ route, navigation }) {
@@ -64,6 +67,7 @@ export default function CharactersPage({ route, navigation }) {
     <CharacterItem
       name={item.Name}
       charId={item.id}
+      image={item.image}
       goToDetails={goToCharDetails}
     />
   );
@@ -87,6 +91,19 @@ export default function CharactersPage({ route, navigation }) {
       setCHARS(titleSnapshot.docs.map((doc) => doc.data()));
       console.log("finished collecting data");
       console.log(CHARS);
+      for (const item in CHARS) {
+        console.log("Image: " + CHARS[item].image);
+        if (CHARS[item].image !== undefined) {
+          //if there is an associated image
+
+          console.log("cached: " + (await checkCached(CHARS[item].image)));
+          if ((await checkCached(CHARS[item].image)) !== "memory") {
+            //if image is not cached then download and cache
+            console.log("downloading");
+            await downloadImage(userUID, CHARS[item].id);
+          }
+        }
+      }
     }
   };
 

@@ -118,3 +118,11 @@ export const deleteImage = async (userUID, Id) => {
       console.log(error);
     });
 };
+
+export async function checkCached(imageURL) {
+  let s;
+  await Image.queryCache([imageURL]).then((res) => {
+    s = String(res[imageURL]);
+  });
+  return s;
+}

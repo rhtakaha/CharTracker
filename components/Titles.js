@@ -16,6 +16,7 @@ import TitleItem from "./TitleItem";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
 import { downloadImage } from "../shared";
+import { checkCached } from "../shared";
 
 export default function Titles({ navigation }) {
   const [DATA, setDATA] = useState({});
@@ -73,14 +74,6 @@ export default function Titles({ navigation }) {
       }
     }
   };
-
-  async function checkCached(imageURL) {
-    let s;
-    await Image.queryCache([imageURL]).then((res) => {
-      s = String(res[imageURL]);
-    });
-    return s;
-  }
 
   useFocusEffect(
     React.useCallback(() => {
