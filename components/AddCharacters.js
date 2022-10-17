@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput } from "react-native";
+import { StyleSheet, Text, View, Button, TextInput, Image } from "react-native";
 import React from "react";
 import { useState } from "react";
 import { db } from "../firebase/firebase_config";
@@ -12,7 +12,8 @@ import {
   where,
 } from "firebase/firestore/lite";
 import { useFocusEffect } from "@react-navigation/native";
-import { getAuthenticationInfo } from "../shared";
+import { getAuthenticationInfo, uploadImage } from "../shared";
+import * as ImagePicker from "expo-image-picker";
 var uuid = require("uuid");
 
 export default function AddCharacters({ route, navigation }) {
@@ -31,6 +32,7 @@ export default function AddCharacters({ route, navigation }) {
   const [enteredBio_Notes, setEnteredBio_Notes] = useState("");
 
   const [userUID, setUserUID] = useState("");
+  const [image, setImage] = useState(null);
 
   function nameInputHandler(enteredText) {
     setEnteredName(enteredText);
@@ -82,6 +84,23 @@ export default function AddCharacters({ route, navigation }) {
     }, [])
   );
 
+  //function taken from the expo documentation: https://docs.expo.dev/versions/latest/sdk/imagepicker/?redirected
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
   const isCharIdUnique = async (db, userUID, newId) => {
     const docRef = doc(db, userUID, titleId, "Characters", newId);
     const docSnap = await getDoc(docRef);
@@ -125,6 +144,9 @@ export default function AddCharacters({ route, navigation }) {
 
         //have the id so create the character
         console.log("Adding new Character");
+        if (image !== null) {
+          await uploadImage(userUID, image, newId);
+        }
         await setDoc(doc(db, userUID, titleId, "Characters", newId), {
           Name: enteredName,
           id: newId,
@@ -138,6 +160,7 @@ export default function AddCharacters({ route, navigation }) {
           Abilities: enteredAbilities,
           Race_People: enteredRace_People,
           Bio_Notes: enteredBio_Notes,
+          image: image ? image : "",
         });
       }
 
@@ -226,6 +249,11 @@ export default function AddCharacters({ route, navigation }) {
         onChangeText={bio_NotesInputHandler}
         value={enteredBio_Notes}
       />
+      <Button title="Pick an image from camera roll" onPress={pickImage} />
+      {/*///maybe add ability to remove the image you picked (for ending with no image?) */}
+      {image && (
+        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+      )}
       <Button title="Submit" onPress={setChar} />
       <Button
         title="Cancel"
