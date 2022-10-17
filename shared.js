@@ -9,7 +9,13 @@ import {
   collection,
   getDoc,
 } from "firebase/firestore/lite";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { Image } from "react-native";
 
 //function that gets the signed in user's UID and puts it into the state variable
@@ -29,26 +35,6 @@ export const getAuthenticationInfo = async (setUserUID) => {
 
 export const getCharDetails = async (userUID, titleId, charId, setDETAILS) => {
   if (userUID !== "") {
-    //console.log("starting to get the data about " + name);
-    // const q = query(collection(db, userUID), where("Title", "==", title));
-    // const querySnapshot = await getDocs(q);
-    // var titleId = "";
-    // querySnapshot.forEach((doc) => {
-    //   // doc.data() is never undefined for query doc snapshots
-    //   titleId = doc.data().id;
-    // });
-
-    // const q2 = query(
-    //   collection(db, userUID, titleId, "Characters"),
-    //   where("Name", "==", name)
-    // );
-    // const querySnapshot2 = await getDocs(q2);
-    // var charId = "";
-    // querySnapshot2.forEach((doc) => {
-    //   // doc.data() is never undefined for query doc snapshots
-    //   charId = doc.data().id;
-    // });
-
     const docRef = doc(db, userUID, titleId, "Characters", charId);
     const docSnap = await getDoc(docRef);
 
@@ -104,14 +90,31 @@ const uriToBlob = (uri) => {
 
 //TODO: download when necessary (should only be used when the image cannot be found locally [deleted/new device])
 //might make images a premium feature since it seems to be more data intensive, but hopefully not
-export const downloadImage = async (userUID, titleId /*, setImage*/) => {
+export const downloadImage = async (userUID, Id /*, setImage*/) => {
   console.log("\nstarting to download image\n");
   const storage = getStorage();
   // Create a reference to the image in firebase storage
-  const imageRef = ref(storage, userUID + "/" + titleId);
+  const imageRef = ref(storage, userUID + "/" + Id);
   console.log("sending req");
   const img = await getDownloadURL(imageRef);
   console.log("received: " + img);
   //setImage(img);
   Image.prefetch(img);
+};
+
+export const deleteImage = async (userUID, Id) => {
+  console.log("\nstarting to delete image\n");
+  const storage = getStorage();
+  // Create a reference to the image in firebase storage
+  const imageRef = ref(storage, userUID + "/" + Id);
+
+  deleteObject(imageRef)
+    .then(() => {
+      // File deleted successfully
+      console.log("successfully deleted");
+    })
+    .catch((error) => {
+      // Uh-oh, an error occurred!
+      console.log(error);
+    });
 };

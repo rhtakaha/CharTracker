@@ -10,10 +10,12 @@ export default function TitleItem(props) {
         style={({ pressed }) => pressed && styles.pressedItem} //if true returns this styling
       >
         <View style={styles.container}>
-          <Image
-            source={{ uri: props.image }}
-            style={{ width: 100, height: 100 }}
-          />
+          {props.image && (
+            <Image
+              source={{ uri: props.image }}
+              style={{ width: 100, height: 100 }}
+            />
+          )}
           <Text style={styles.titleText}>{props.text}</Text>
         </View>
       </Pressable>

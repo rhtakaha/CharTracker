@@ -14,7 +14,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
 import { uploadImage } from "../shared";
 import * as ImagePicker from "expo-image-picker";
-import { async } from "@firebase/util";
+import { deleteImage } from "../shared";
 
 var ogDocRef = "";
 export default function UpdateTitle({ route, navigation }) {
@@ -120,6 +120,13 @@ export default function UpdateTitle({ route, navigation }) {
     }
   };
 
+  const deleteTitleImage = async () => {
+    deleteImage(userUID, titleId);
+    updateDoc(ogDocRef, {
+      image: "",
+    });
+  };
+
   return (
     <View>
       <Text>UpdateTitle</Text>
@@ -129,10 +136,14 @@ export default function UpdateTitle({ route, navigation }) {
         onChangeText={newTitleInputHandler}
         value={newTitle}
       />
-      <Image
-        source={{ uri: TITLEINFO.image }}
-        style={{ width: 100, height: 100 }}
-      />
+      {TITLEINFO.image && (
+        <Image
+          source={{ uri: TITLEINFO.image }}
+          style={{ width: 100, height: 100 }}
+        />
+      )}
+
+      <Button title="Delete current image" onPress={deleteTitleImage} />
       <Button title="Pick an image from camera roll" onPress={pickImage} />
       {image && (
         <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
