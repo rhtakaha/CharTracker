@@ -49,7 +49,6 @@ export default function Titles({ navigation }) {
         console.log("starting to get the data!");
         const dummyCol = collection(db, userUID);
         const dummySnapshot = await getDocs(dummyCol);
-        //DATA = dummySnapshot.docs.map((doc) => doc.data());
         setDATA(dummySnapshot.docs.map((doc) => doc.data()));
         console.log("collected data:");
         console.log(JSON.stringify(DATA) + "\n");
@@ -59,10 +58,6 @@ export default function Titles({ navigation }) {
           console.log("Image: " + DATA[item].image);
           if (DATA[item].image !== undefined) {
             //if there is an associated image
-            // console.log(
-            //   "image associated: " +
-            //     JSON.stringify(Image.queryCache([DATA[item].image]))
-            // );
 
             console.log("cached: " + (await checkCached(DATA[item].image)));
             if ((await checkCached(DATA[item].image)) !== "memory") {
@@ -81,31 +76,24 @@ export default function Titles({ navigation }) {
   async function checkCached(imageURL) {
     let s;
     await Image.queryCache([imageURL]).then((res) => {
-      // console.log("result: " + JSON.stringify(res));
-      // console.log("res: " + res[imageURL]);
       s = String(res[imageURL]);
     });
-    // console.log("cached: ");
-    // console.log(s);
     return s;
   }
 
   useFocusEffect(
     React.useCallback(() => {
       getAuthenticationInfo(setUserUID);
-      //getTitles();
     }, [])
   );
   useFocusEffect(
     React.useCallback(() => {
-      //getAuthenticationInfo();
       getTitles();
     }, [userUID])
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Button title="get Titles" onPress={getTitles} /> */}
       <View style={styles.buttonBody}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}
@@ -115,11 +103,6 @@ export default function Titles({ navigation }) {
           <Text style={styles.buttonText}>Add a Title</Text>
         </Pressable>
       </View>
-
-      {/* <Button
-        title="Add a Title"
-        onPress={() => navigation.navigate("AddTitles")}
-      /> */}
       <FlatList
         data={DATA}
         renderItem={renderItem}
