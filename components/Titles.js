@@ -7,6 +7,7 @@ import {
   StatusBar,
   Button,
   Pressable,
+  Image,
 } from "react-native";
 import React, { useState } from "react";
 import { collection, getDocs, getDoc, doc } from "firebase/firestore/lite";
@@ -14,6 +15,7 @@ import { db } from "../firebase/firebase_config";
 import TitleItem from "./TitleItem";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
+import { downloadImage } from "../shared";
 
 export default function Titles({ navigation }) {
   const [DATA, setDATA] = useState({});
@@ -50,12 +52,43 @@ export default function Titles({ navigation }) {
         //DATA = dummySnapshot.docs.map((doc) => doc.data());
         setDATA(dummySnapshot.docs.map((doc) => doc.data()));
         console.log("collected data:");
-        console.log(DATA);
+        console.log(JSON.stringify(DATA) + "\n");
+        //now that we have all the title data
+        //TODO: check if each image is in the cache, if not then download and add to cache
+        for (const item in DATA) {
+          console.log("Image: " + DATA[item].image);
+          if (DATA[item].image !== undefined) {
+            //if there is an associated image
+            // console.log(
+            //   "image associated: " +
+            //     JSON.stringify(Image.queryCache([DATA[item].image]))
+            // );
+
+            console.log("cached: " + (await checkCached(DATA[item].image)));
+            if ((await checkCached(DATA[item].image)) !== "memory") {
+              //if image is not cached then download and cache
+              console.log("downloading");
+              await downloadImage(userUID, DATA[item].id);
+            }
+          }
+        }
       } else {
         // 0 documents means no collection so will need to make the collection with the first title, nothing to be done here
       }
     }
   };
+
+  async function checkCached(imageURL) {
+    let s;
+    await Image.queryCache([imageURL]).then((res) => {
+      // console.log("result: " + JSON.stringify(res));
+      // console.log("res: " + res[imageURL]);
+      s = String(res[imageURL]);
+    });
+    // console.log("cached: ");
+    // console.log(s);
+    return s;
+  }
 
   useFocusEffect(
     React.useCallback(() => {

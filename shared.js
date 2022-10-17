@@ -104,13 +104,14 @@ const uriToBlob = (uri) => {
 
 //TODO: download when necessary (should only be used when the image cannot be found locally [deleted/new device])
 //might make images a premium feature since it seems to be more data intensive, but hopefully not
-export const downloadImage = async (userUID, titleId, setImage) => {
-  console.log("starting to download image\n");
+export const downloadImage = async (userUID, titleId /*, setImage*/) => {
+  console.log("\nstarting to download image\n");
   const storage = getStorage();
   // Create a reference to the image in firebase storage
   const imageRef = ref(storage, userUID + "/" + titleId);
   console.log("sending req");
   const img = await getDownloadURL(imageRef);
   console.log("received: " + img);
-  setImage(img);
+  //setImage(img);
+  Image.prefetch(img);
 };
