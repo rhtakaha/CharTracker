@@ -49,7 +49,7 @@ export default function Titles({ navigation }) {
         console.log("starting to get the data!");
         const dummyCol = collection(db, userUID);
         const dummySnapshot = await getDocs(dummyCol);
-        //DATA = dummySnapshot.docs.map((doc) => doc.data());
+
         setDATA(dummySnapshot.docs.map((doc) => doc.data()));
         console.log("collected data:");
         console.log(JSON.stringify(DATA) + "\n");
