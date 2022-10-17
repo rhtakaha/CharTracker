@@ -1,4 +1,12 @@
-import { StyleSheet, Text, View, Button, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextInput,
+  Image,
+  ScrollView,
+} from "react-native";
 import React, { useState } from "react";
 import { db } from "../firebase/firebase_config";
 import {
@@ -11,8 +19,8 @@ import {
   where,
 } from "firebase/firestore/lite";
 import { useFocusEffect } from "@react-navigation/native";
-import { getAuthenticationInfo } from "../shared";
-import { getCharDetails } from "../shared";
+import { getAuthenticationInfo, getCharDetails, uploadImage } from "../shared";
+import * as ImagePicker from "expo-image-picker";
 
 var ogDocInfo = [];
 export default function UpdateCharacter({ route, navigation }) {
@@ -31,6 +39,7 @@ export default function UpdateCharacter({ route, navigation }) {
   const [CHARINFO, setCHARINFO] = useState({});
 
   const [userUID, setUserUID] = useState("");
+  const [image, setImage] = useState(null);
 
   function newNameInputHandler(updatedName) {
     setNewName(updatedName);
@@ -97,6 +106,23 @@ export default function UpdateCharacter({ route, navigation }) {
     }, [CHARINFO])
   );
 
+  //function taken from the expo documentation: https://docs.expo.dev/versions/latest/sdk/imagepicker/?redirected
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
   const updateChar = async () => {
     //only change the fields modified in this screen, leave the other(s) the same
     console.log("updating Character in " + title);
@@ -144,6 +170,9 @@ export default function UpdateCharacter({ route, navigation }) {
       console.log("Updating " + ogDocRef + " and there it is");
       console.log("type of ogDocRef: " + typeof ogDocRef);
       console.log("WEAPONS: " + newWeapons);
+      if (image !== null) {
+        await uploadImage(userUID, image, charId);
+      }
       updateDoc(ogDocRef, {
         Name: newName,
         Profession: newProfession,
@@ -156,6 +185,7 @@ export default function UpdateCharacter({ route, navigation }) {
         Abilities: newAbilities,
         Race_People: newRace_People,
         Bio_Notes: newBio_Notes,
+        image: image ? image : "",
       });
     }
 
@@ -181,97 +211,110 @@ export default function UpdateCharacter({ route, navigation }) {
 
   return (
     <View>
-      <Text>UpdateCharacter</Text>
-      <TextInput
-        placeholder={"Name: " + CHARINFO.Name}
-        onChangeText={newNameInputHandler}
-        value={newName}
-      />
-      <TextInput
-        placeholder={
-          CHARINFO.Profession === ""
-            ? "Profession"
-            : "Profession: " + CHARINFO.Profession
-        }
-        onChangeText={newProfessionInputHandler}
-        value={newProfession}
-      />
-      <TextInput
-        placeholder={
-          CHARINFO.Allies === "" ? "Allies" : "Allies: " + CHARINFO.Allies
-        }
-        onChangeText={newAlliesInputHandler}
-        value={newAllies}
-      />
-      <TextInput
-        placeholder={
-          CHARINFO.Enemies === "" ? "Enemies" : "Enemies: " + CHARINFO.Enemies
-        }
-        onChangeText={newEnemiesInputHandler}
-        value={newEnemies}
-      />
-      <TextInput
-        placeholder={
-          CHARINFO.Associates === "" ? "Associates" : CHARINFO.Associates
-        }
-        onChangeText={newAssociatesInputHandler}
-        value={newAssociates}
-      />
-      <TextInput
-        placeholder={CHARINFO.Weapons === "" ? "Weapons" : CHARINFO.Weapons}
-        onChangeText={newWeaponsInputHandler}
-        value={newWeapons}
-      />
-      <TextInput
-        placeholder={
-          CHARINFO.Vehicles_Mounts === ""
-            ? "Vehicle/Mount(s)"
-            : CHARINFO.Vehicles_Mounts
-        }
-        onChangeText={newVehicles_MountsInputHandler}
-        value={newVehicles_Mounts}
-      />
-      <TextInput
-        placeholder={
-          CHARINFO.Affiliation === "" ? "Affiliation" : CHARINFO.Affiliation
-        }
-        onChangeText={newAffiliationInputHandler}
-        value={newAffiliation}
-      />
-      <TextInput
-        placeholder={
-          CHARINFO.Abilities === "" ? "Abilities" : CHARINFO.Abilities
-        }
-        onChangeText={newAbilitiesInputHandler}
-        value={newAbilities}
-      />
-      <TextInput
-        placeholder={
-          CHARINFO.Race_People === "" ? "Race/People" : CHARINFO.Race_People
-        }
-        onChangeText={newRace_PeopleInputHandler}
-        value={newRace_People}
-      />
-      {/*TODO: make it so long text is more readable as you enter it- PROBABLY ALSO APPLIES TO AddCharacter */}
-      <TextInput
-        placeholder={
-          CHARINFO.Bio_Notes === "" ? "Bio/Notes" : CHARINFO.Bio_Notes
-        }
-        onChangeText={newBio_NotesInputHandler}
-        value={newBio_Notes}
-        multiline={true}
-      />
-      <Button title="Submit" onPress={updateChar} />
-      <Button
-        title="Cancel"
-        onPress={() =>
-          navigation.navigate("CharacterDetails", {
-            title: title,
-            titleId: titleId,
-            charId: charId,
-          })
-        }
-      />
+      <ScrollView>
+        <Text>UpdateCharacter</Text>
+        {CHARINFO.image && (
+          <Image
+            source={{ uri: CHARINFO.image }}
+            style={{ width: 100, height: 100 }}
+          />
+        )}
+        <TextInput
+          placeholder={"Name: " + CHARINFO.Name}
+          onChangeText={newNameInputHandler}
+          value={newName}
+        />
+        <TextInput
+          placeholder={
+            CHARINFO.Profession === ""
+              ? "Profession"
+              : "Profession: " + CHARINFO.Profession
+          }
+          onChangeText={newProfessionInputHandler}
+          value={newProfession}
+        />
+        <TextInput
+          placeholder={
+            CHARINFO.Allies === "" ? "Allies" : "Allies: " + CHARINFO.Allies
+          }
+          onChangeText={newAlliesInputHandler}
+          value={newAllies}
+        />
+        <TextInput
+          placeholder={
+            CHARINFO.Enemies === "" ? "Enemies" : "Enemies: " + CHARINFO.Enemies
+          }
+          onChangeText={newEnemiesInputHandler}
+          value={newEnemies}
+        />
+        <TextInput
+          placeholder={
+            CHARINFO.Associates === "" ? "Associates" : CHARINFO.Associates
+          }
+          onChangeText={newAssociatesInputHandler}
+          value={newAssociates}
+        />
+        <TextInput
+          placeholder={CHARINFO.Weapons === "" ? "Weapons" : CHARINFO.Weapons}
+          onChangeText={newWeaponsInputHandler}
+          value={newWeapons}
+        />
+        <TextInput
+          placeholder={
+            CHARINFO.Vehicles_Mounts === ""
+              ? "Vehicle/Mount(s)"
+              : CHARINFO.Vehicles_Mounts
+          }
+          onChangeText={newVehicles_MountsInputHandler}
+          value={newVehicles_Mounts}
+        />
+        <TextInput
+          placeholder={
+            CHARINFO.Affiliation === "" ? "Affiliation" : CHARINFO.Affiliation
+          }
+          onChangeText={newAffiliationInputHandler}
+          value={newAffiliation}
+        />
+        <TextInput
+          placeholder={
+            CHARINFO.Abilities === "" ? "Abilities" : CHARINFO.Abilities
+          }
+          onChangeText={newAbilitiesInputHandler}
+          value={newAbilities}
+        />
+        <TextInput
+          placeholder={
+            CHARINFO.Race_People === "" ? "Race/People" : CHARINFO.Race_People
+          }
+          onChangeText={newRace_PeopleInputHandler}
+          value={newRace_People}
+        />
+        {/*TODO: make it so long text is more readable as you enter it- PROBABLY ALSO APPLIES TO AddCharacter */}
+        <TextInput
+          placeholder={
+            CHARINFO.Bio_Notes === "" ? "Bio/Notes" : CHARINFO.Bio_Notes
+          }
+          onChangeText={newBio_NotesInputHandler}
+          value={newBio_Notes}
+          multiline={true}
+        />
+        <Button title="Pick an image from camera roll" onPress={pickImage} />
+        {/*///maybe add ability to remove the image you picked (for ending with no image?) */}
+        {image && (
+          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+        )}
+        <Button title="Submit" onPress={updateChar} />
+        <Button
+          title="Cancel"
+          onPress={() =>
+            navigation.navigate("CharacterDetails", {
+              title: title,
+              titleId: titleId,
+              charId: charId,
+            })
+          }
+        />
+      </ScrollView>
     </View>
   );
 }

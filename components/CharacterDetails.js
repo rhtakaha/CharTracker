@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  Image,
+  ScrollView,
+} from "react-native";
 import React, { useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
@@ -44,36 +51,44 @@ export default function CharacterDetails({ route, navigation }) {
 
   return (
     <View>
-      <Text>CharacterDetails</Text>
-      <Button
-        title="Update Character"
-        onPress={() =>
-          navigation.navigate("UpdateCharacter", {
-            title: title,
-            titleId: titleId,
-            charId: charId,
-          })
-        }
-      />
-      <Button title="Delete Character" onPress={startConfirmationHandler} />
-      <Confirmation
-        text="Are you sure you want to delete this Character?"
-        visible={confirmationIsVisible}
-        onConfirm={deleteCharacter}
-        onCancel={endConfirmationHandler}
-        confirmColor={{ backgroundColor: "red" }}
-      />
-      <Text>{"Name: " + DETAILS.Name}</Text>
-      <Text>{"Profession: " + DETAILS.Profession}</Text>
-      <Text>{"Allies: " + DETAILS.Allies}</Text>
-      <Text>{"Enemies: " + DETAILS.Enemies}</Text>
-      <Text>{"Associates: " + DETAILS.Associates}</Text>
-      <Text>{"Weapons: " + DETAILS.Weapons}</Text>
-      <Text>{"Vehicle/Mount(s): " + DETAILS.Vehicles_Mounts}</Text>
-      <Text>{"Affiliation: " + DETAILS.Affiliation}</Text>
-      <Text>{"Abilities: " + DETAILS.Abilities}</Text>
-      <Text>{"Race/People: " + DETAILS.Race_People}</Text>
-      <Text>{"Bio/Notes: " + DETAILS.Bio_Notes}</Text>
+      <ScrollView>
+        <Text>CharacterDetails</Text>
+        <Button
+          title="Update Character"
+          onPress={() =>
+            navigation.navigate("UpdateCharacter", {
+              title: title,
+              titleId: titleId,
+              charId: charId,
+            })
+          }
+        />
+        <Button title="Delete Character" onPress={startConfirmationHandler} />
+        <Confirmation
+          text="Are you sure you want to delete this Character?"
+          visible={confirmationIsVisible}
+          onConfirm={deleteCharacter}
+          onCancel={endConfirmationHandler}
+          confirmColor={{ backgroundColor: "red" }}
+        />
+        {DETAILS.image && (
+          <Image
+            source={{ uri: DETAILS.image }}
+            style={{ width: 100, height: 100 }}
+          />
+        )}
+        <Text>{"Name: " + DETAILS.Name}</Text>
+        <Text>{"Profession: " + DETAILS.Profession}</Text>
+        <Text>{"Allies: " + DETAILS.Allies}</Text>
+        <Text>{"Enemies: " + DETAILS.Enemies}</Text>
+        <Text>{"Associates: " + DETAILS.Associates}</Text>
+        <Text>{"Weapons: " + DETAILS.Weapons}</Text>
+        <Text>{"Vehicle/Mount(s): " + DETAILS.Vehicles_Mounts}</Text>
+        <Text>{"Affiliation: " + DETAILS.Affiliation}</Text>
+        <Text>{"Abilities: " + DETAILS.Abilities}</Text>
+        <Text>{"Race/People: " + DETAILS.Race_People}</Text>
+        <Text>{"Bio/Notes: " + DETAILS.Bio_Notes}</Text>
+      </ScrollView>
     </View>
   );
 }
