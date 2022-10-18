@@ -32,6 +32,8 @@ const styles = StyleSheet.create({
   titleText: {
     color: "black",
     padding: 8,
+    alignSelf: "center",
+    fontSize: 23,
   },
   pressedItem: {
     opacity: 0.5,
