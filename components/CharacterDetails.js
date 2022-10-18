@@ -5,6 +5,7 @@ import {
   Button,
   Image,
   ScrollView,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -50,10 +51,9 @@ export default function CharacterDetails({ route, navigation }) {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <ScrollView>
-        <Text>CharacterDetails</Text>
-        <Button
+        {/* <Button
           title="Update Character"
           onPress={() =>
             navigation.navigate("UpdateCharacter", {
@@ -62,8 +62,32 @@ export default function CharacterDetails({ route, navigation }) {
               charId: charId,
             })
           }
-        />
-        <Button title="Delete Character" onPress={startConfirmationHandler} />
+        /> */}
+        <View style={styles.buttonContainer}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={() =>
+              navigation.navigate("UpdateCharacter", {
+                title: title,
+                titleId: titleId,
+                charId: charId,
+              })
+            }
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.buttonText}>Update Character</Text>
+          </Pressable>
+        </View>
+        {/* <Button title="Delete Character" onPress={startConfirmationHandler} /> */}
+        <View style={styles.buttonContainer}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={startConfirmationHandler}
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.buttonText}>Delete Character</Text>
+          </Pressable>
+        </View>
         <Confirmation
           text="Are you sure you want to delete this Character?"
           visible={confirmationIsVisible}
@@ -71,26 +95,63 @@ export default function CharacterDetails({ route, navigation }) {
           onCancel={endConfirmationHandler}
           confirmColor={{ backgroundColor: "red" }}
         />
-        {DETAILS.image && (
-          <Image
-            source={{ uri: DETAILS.image }}
-            style={{ width: 100, height: 100 }}
-          />
-        )}
-        <Text>{"Name: " + DETAILS.Name}</Text>
-        <Text>{"Profession: " + DETAILS.Profession}</Text>
-        <Text>{"Allies: " + DETAILS.Allies}</Text>
-        <Text>{"Enemies: " + DETAILS.Enemies}</Text>
-        <Text>{"Associates: " + DETAILS.Associates}</Text>
-        <Text>{"Weapons: " + DETAILS.Weapons}</Text>
-        <Text>{"Vehicle/Mount(s): " + DETAILS.Vehicles_Mounts}</Text>
-        <Text>{"Affiliation: " + DETAILS.Affiliation}</Text>
-        <Text>{"Abilities: " + DETAILS.Abilities}</Text>
-        <Text>{"Race/People: " + DETAILS.Race_People}</Text>
-        <Text>{"Bio/Notes: " + DETAILS.Bio_Notes}</Text>
+        <View style={styles.image}>
+          {DETAILS.image && (
+            <Image
+              source={{ uri: DETAILS.image }}
+              style={{ width: 100, height: 100 }}
+            />
+          )}
+        </View>
+
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>{"Name: " + DETAILS.Name}</Text>
+          <Text style={styles.text}>{"Profession: " + DETAILS.Profession}</Text>
+          <Text style={styles.text}>{"Allies: " + DETAILS.Allies}</Text>
+          <Text style={styles.text}>{"Enemies: " + DETAILS.Enemies}</Text>
+          <Text style={styles.text}>{"Associates: " + DETAILS.Associates}</Text>
+          <Text style={styles.text}>{"Weapons: " + DETAILS.Weapons}</Text>
+          <Text style={styles.text}>
+            {"Vehicle/Mount(s): " + DETAILS.Vehicles_Mounts}
+          </Text>
+          <Text style={styles.text}>
+            {"Affiliation: " + DETAILS.Affiliation}
+          </Text>
+          <Text style={styles.text}>{"Abilities: " + DETAILS.Abilities}</Text>
+          <Text style={styles.text}>
+            {"Race/People: " + DETAILS.Race_People}
+          </Text>
+          <Text style={styles.text}>{"Bio/Notes: " + DETAILS.Bio_Notes}</Text>
+        </View>
       </ScrollView>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#003B46",
+    justifyContent: "center",
+  },
+  buttonContainer: { margin: 5, borderRadius: 6, backgroundColor: "#86ac41" },
+  buttonText: { padding: 8, alignSelf: "center", color: "black" },
+  pressedButton: {
+    opacity: 0.5,
+  },
+  image: {
+    alignSelf: "center",
+  },
+  textContainer: {
+    backgroundColor: "#66A5AD",
+    minWidth: 200,
+    maxWidth: 400,
+    margin: 5,
+    padding: 5,
+    borderRadius: 4,
+    alignSelf: "center",
+  },
+  text: {
+    margin: 5,
+  },
+});

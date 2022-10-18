@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignSelf: "center",
   },
-  buttonContainer: { margin: 9, borderRadius: 6, backgroundColor: "#86ac41" },
+  buttonContainer: { margin: 5, borderRadius: 6, backgroundColor: "#86ac41" },
   buttonText: { padding: 8, alignSelf: "center", color: "black" },
   pressedButton: {
     opacity: 0.5,
