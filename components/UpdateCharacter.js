@@ -19,7 +19,12 @@ import {
   where,
 } from "firebase/firestore/lite";
 import { useFocusEffect } from "@react-navigation/native";
-import { getAuthenticationInfo, getCharDetails, uploadImage } from "../shared";
+import {
+  getAuthenticationInfo,
+  getCharDetails,
+  uploadImage,
+  deleteImage,
+} from "../shared";
 import * as ImagePicker from "expo-image-picker";
 
 var ogDocInfo = [];
@@ -170,9 +175,7 @@ export default function UpdateCharacter({ route, navigation }) {
       console.log("Updating " + ogDocRef + " and there it is");
       console.log("type of ogDocRef: " + typeof ogDocRef);
       console.log("WEAPONS: " + newWeapons);
-      if (image !== null) {
-        await uploadImage(userUID, image, charId);
-      }
+      updateCharImage();
       updateDoc(ogDocRef, {
         Name: newName,
         Profession: newProfession,
@@ -208,6 +211,18 @@ export default function UpdateCharacter({ route, navigation }) {
     setNewRace_People(CHARINFO.Race_People);
     setNewBio_Notes(CHARINFO.Bio_Notes);
   }
+
+  //not sure why but putting this in a function and calling it makes the UI more responsive (no page refresh to see images?)
+  const updateCharImage = async () => {
+    if (image !== null) {
+      await uploadImage(userUID, image, charId);
+    }
+  };
+
+  const deleteCharImage = async () => {
+    deleteImage(userUID, charId);
+    setImage(null);
+  };
 
   return (
     <View>
@@ -298,6 +313,7 @@ export default function UpdateCharacter({ route, navigation }) {
           value={newBio_Notes}
           multiline={true}
         />
+        <Button title="Delete current image" onPress={deleteCharImage} />
         <Button title="Pick an image from camera roll" onPress={pickImage} />
         {/*///maybe add ability to remove the image you picked (for ending with no image?) */}
         {image && (
