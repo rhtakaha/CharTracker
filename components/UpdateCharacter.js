@@ -6,6 +6,7 @@ import {
   TextInput,
   Image,
   ScrollView,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import { db } from "../firebase/firebase_config";
@@ -225,19 +226,22 @@ export default function UpdateCharacter({ route, navigation }) {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <ScrollView>
-        <Text>UpdateCharacter</Text>
-        {CHARINFO.image && (
-          <Image
-            source={{ uri: CHARINFO.image }}
-            style={{ width: 100, height: 100 }}
-          />
-        )}
+        <View style={styles.image}>
+          {CHARINFO.image && (
+            <Image
+              source={{ uri: CHARINFO.image }}
+              style={{ width: 100, height: 100 }}
+            />
+          )}
+        </View>
+
         <TextInput
           placeholder={"Name: " + CHARINFO.Name}
           onChangeText={newNameInputHandler}
           value={newName}
+          style={styles.inputContainer}
         />
         <TextInput
           placeholder={
@@ -247,6 +251,7 @@ export default function UpdateCharacter({ route, navigation }) {
           }
           onChangeText={newProfessionInputHandler}
           value={newProfession}
+          style={styles.inputContainer}
         />
         <TextInput
           placeholder={
@@ -254,6 +259,7 @@ export default function UpdateCharacter({ route, navigation }) {
           }
           onChangeText={newAlliesInputHandler}
           value={newAllies}
+          style={styles.inputContainer}
         />
         <TextInput
           placeholder={
@@ -261,6 +267,7 @@ export default function UpdateCharacter({ route, navigation }) {
           }
           onChangeText={newEnemiesInputHandler}
           value={newEnemies}
+          style={styles.inputContainer}
         />
         <TextInput
           placeholder={
@@ -268,11 +275,13 @@ export default function UpdateCharacter({ route, navigation }) {
           }
           onChangeText={newAssociatesInputHandler}
           value={newAssociates}
+          style={styles.inputContainer}
         />
         <TextInput
           placeholder={CHARINFO.Weapons === "" ? "Weapons" : CHARINFO.Weapons}
           onChangeText={newWeaponsInputHandler}
           value={newWeapons}
+          style={styles.inputContainer}
         />
         <TextInput
           placeholder={
@@ -282,6 +291,7 @@ export default function UpdateCharacter({ route, navigation }) {
           }
           onChangeText={newVehicles_MountsInputHandler}
           value={newVehicles_Mounts}
+          style={styles.inputContainer}
         />
         <TextInput
           placeholder={
@@ -289,6 +299,7 @@ export default function UpdateCharacter({ route, navigation }) {
           }
           onChangeText={newAffiliationInputHandler}
           value={newAffiliation}
+          style={styles.inputContainer}
         />
         <TextInput
           placeholder={
@@ -296,6 +307,7 @@ export default function UpdateCharacter({ route, navigation }) {
           }
           onChangeText={newAbilitiesInputHandler}
           value={newAbilities}
+          style={styles.inputContainer}
         />
         <TextInput
           placeholder={
@@ -303,6 +315,7 @@ export default function UpdateCharacter({ route, navigation }) {
           }
           onChangeText={newRace_PeopleInputHandler}
           value={newRace_People}
+          style={styles.inputContainer}
         />
         {/*TODO: make it so long text is more readable as you enter it- PROBABLY ALSO APPLIES TO AddCharacter */}
         <TextInput
@@ -312,15 +325,51 @@ export default function UpdateCharacter({ route, navigation }) {
           onChangeText={newBio_NotesInputHandler}
           value={newBio_Notes}
           multiline={true}
+          style={styles.inputContainer}
         />
-        <Button title="Delete current image" onPress={deleteCharImage} />
-        <Button title="Pick an image from camera roll" onPress={pickImage} />
+        {/* <Button title="Delete current image" onPress={deleteCharImage} /> */}
+        <View style={styles.buttonContainer}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={deleteCharImage}
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.buttonText}>Delete current image</Text>
+          </Pressable>
+        </View>
+        {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
+        <View style={styles.buttonContainer}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={pickImage}
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.buttonText}>
+              Pick an image from camera roll
+            </Text>
+          </Pressable>
+        </View>
         {/*///maybe add ability to remove the image you picked (for ending with no image?) */}
-        {image && (
-          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-        )}
-        <Button title="Submit" onPress={updateChar} />
-        <Button
+        <View style={styles.image}>
+          {image && (
+            <Image
+              source={{ uri: image }}
+              style={{ width: 200, height: 200 }}
+            />
+          )}
+        </View>
+
+        {/* <Button title="Submit" onPress={updateChar} /> */}
+        <View style={styles.buttonContainer}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={updateChar}
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.buttonText}>Submit</Text>
+          </Pressable>
+        </View>
+        {/* <Button
           title="Cancel"
           onPress={() =>
             navigation.navigate("CharacterDetails", {
@@ -329,10 +378,48 @@ export default function UpdateCharacter({ route, navigation }) {
               charId: charId,
             })
           }
-        />
+        /> */}
+        <View style={styles.buttonContainer}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={() =>
+              navigation.navigate("CharacterDetails", {
+                title: title,
+                titleId: titleId,
+                charId: charId,
+              })
+            }
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.buttonText}>Cancel</Text>
+          </Pressable>
+        </View>
       </ScrollView>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#003B46",
+    justifyContent: "center",
+  },
+  buttonContainer: { margin: 5, borderRadius: 6, backgroundColor: "#86ac41" },
+  buttonText: { padding: 8, alignSelf: "center", color: "black" },
+  pressedButton: {
+    opacity: 0.5,
+  },
+  image: {
+    alignSelf: "center",
+  },
+  inputContainer: {
+    backgroundColor: "#c4dfe6",
+    minWidth: 200,
+    maxWidth: 400,
+    margin: 5,
+    padding: 5,
+    borderRadius: 4,
+    alignSelf: "center",
+  },
+});
