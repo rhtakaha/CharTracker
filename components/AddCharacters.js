@@ -122,15 +122,6 @@ export default function AddCharacters({ route, navigation }) {
   const setChar = async () => {
     if (enteredName !== "") {
       console.log("starting set Character");
-      // const q = query(collection(db, userUID), where("Title", "==", title));
-      // const querySnapshot = await getDocs(q);
-      // var titleId = "";
-      // querySnapshot.forEach((doc) => {
-      //   // doc.data() is never undefined for query doc snapshots
-      //   titleId = doc.data().id;
-      // });
-      const docRef = doc(db, userUID, titleId, "Characters", enteredName);
-      const docSnap = await getDoc(docRef);
       if (!(await isCharNameUnique(userUID, enteredName))) {
         //not unique name so block
         console.log("Invalid name. Already in use.");
@@ -163,28 +154,6 @@ export default function AddCharacters({ route, navigation }) {
           image: image ? image : "",
         });
       }
-
-      // if (docSnap.exists()) {
-      //   //name already exists so is invalid
-      //   console.log("Invalid name. Already in use.");
-      //   //TODO: add some sort of alert/popup in app
-      // } else {
-      //   console.log("Adding new Character");
-      //   await setDoc(doc(db, userUID, titleId, "Characters", enteredName), {
-      //     Name: enteredName,
-      //     id: enteredName, //might be bad but should work TODO: see what the key/id per item is for
-      //     Profession: enteredProfession,
-      //     Allies: enteredAllies,
-      //     Enemies: enteredEnemies,
-      //     Associates: enteredAssociates,
-      //     Weapons: enteredWeapons,
-      //     Vehicles_Mounts: enteredVehicle_Mounts,
-      //     Affiliation: enteredAffiliation,
-      //     Abilities: enteredAbilities,
-      //     Race_People: enteredRace_People,
-      //     Bio_Notes: enteredBio_Notes,
-      //   });
-      // }
     } else {
       console.log("NAME REQUIRED, NOT ENTERED");
     }
@@ -268,4 +237,26 @@ export default function AddCharacters({ route, navigation }) {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#003B46",
+    justifyContent: "center",
+  },
+  inputContainer: {
+    backgroundColor: "#c4dfe6",
+    aspectRatio: 7,
+    margin: 5,
+    padding: 5,
+    borderRadius: 4,
+    alignSelf: "center",
+  },
+  buttonContainer: { margin: 9, borderRadius: 6, backgroundColor: "#86ac41" },
+  buttonText: { padding: 8, alignSelf: "center", color: "black" },
+  pressedButton: {
+    opacity: 0.5,
+  },
+  image: {
+    alignSelf: "center",
+  },
+});
