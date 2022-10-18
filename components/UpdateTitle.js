@@ -1,4 +1,12 @@
-import { StyleSheet, Text, TextInput, View, Button, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+  Image,
+  Pressable,
+} from "react-native";
 import React, { useState } from "react";
 import { db } from "../firebase/firebase_config";
 import {
@@ -128,29 +136,83 @@ export default function UpdateTitle({ route, navigation }) {
   };
 
   return (
-    <View>
-      <Text>UpdateTitle</Text>
-      <Text>{"Current Title: " + TITLEINFO.Title}</Text>
+    <View style={styles.container}>
+      {/* <Text >{"Current Title: " + TITLEINFO.Title}</Text> */}
+      <View style={styles.image}>
+        {TITLEINFO.image && (
+          <Image
+            source={{ uri: TITLEINFO.image }}
+            style={{ width: 200, height: 200 }}
+          />
+        )}
+      </View>
       <TextInput
         placeholder="New Title"
         onChangeText={newTitleInputHandler}
         value={newTitle}
+        style={styles.inputContainer}
       />
-      {TITLEINFO.image && (
-        <Image
-          source={{ uri: TITLEINFO.image }}
-          style={{ width: 100, height: 100 }}
-        />
-      )}
 
-      <Button title="Delete current image" onPress={deleteTitleImage} />
-      <Button title="Pick an image from camera roll" onPress={pickImage} />
-      {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-      )}
-      <Button title="Enter" onPress={updateNewTitle} />
+      {/* <Button title="Delete current image" onPress={deleteTitleImage} /> */}
+      <View style={styles.buttonContainer}>
+        <Pressable
+          android_ripple={{ color: "#dddddd" }}
+          onPress={deleteTitleImage}
+          style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+        >
+          <Text style={styles.buttonText}>Delete current image</Text>
+        </Pressable>
+      </View>
+      {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
+      <View style={styles.buttonContainer}>
+        <Pressable
+          android_ripple={{ color: "#dddddd" }}
+          onPress={pickImage}
+          style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+        >
+          <Text style={styles.buttonText}>Pick an image from camera roll</Text>
+        </Pressable>
+      </View>
+      <View style={styles.image}>
+        {image && (
+          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+        )}
+      </View>
+
+      {/* <Button title="Enter" onPress={updateNewTitle} /> */}
+      <View style={styles.buttonContainer}>
+        <Pressable
+          android_ripple={{ color: "#dddddd" }}
+          onPress={updateNewTitle}
+          style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+        >
+          <Text style={styles.buttonText}>Enter</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#003B46",
+    justifyContent: "center",
+  },
+  inputContainer: {
+    backgroundColor: "#c4dfe6",
+    aspectRatio: 7,
+    margin: 5,
+    padding: 5,
+    borderRadius: 4,
+    alignSelf: "center",
+  },
+  buttonContainer: { margin: 9, borderRadius: 6, backgroundColor: "#86ac41" },
+  buttonText: { padding: 8, alignSelf: "center", color: "black" },
+  pressedButton: {
+    opacity: 0.5,
+  },
+  image: {
+    alignSelf: "center",
+  },
+});
