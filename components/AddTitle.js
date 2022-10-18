@@ -173,10 +173,21 @@ export default function AddTitle({ navigation }) {
           <Text style={styles.buttonText}>Enter</Text>
         </Pressable>
       </View>
-      <Button title="Pick an image from camera roll" onPress={pickImage} />
-      {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-      )}
+      <View style={styles.buttonContainer}>
+        <Pressable
+          android_ripple={{ color: "#dddddd" }}
+          onPress={pickImage}
+          style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+        >
+          <Text style={styles.buttonText}>Pick an image from camera roll</Text>
+        </Pressable>
+      </View>
+      <View style={styles.image}>
+        {image && (
+          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+        )}
+      </View>
+
       {/* <Button title="Upload image?" onPress={uploadImage} /> */}
       {/* <Button title="Download image?" onPress={downloadImage} />
       {recImage && (
@@ -208,5 +219,8 @@ const styles = StyleSheet.create({
   buttonText: { padding: 8, alignSelf: "center", color: "black" },
   pressedButton: {
     opacity: 0.5,
+  },
+  image: {
+    alignSelf: "center",
   },
 });
