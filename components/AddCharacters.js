@@ -1,4 +1,13 @@
-import { StyleSheet, Text, View, Button, TextInput, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextInput,
+  Image,
+  ScrollView,
+  Pressable,
+} from "react-native";
 import React from "react";
 import { useState } from "react";
 import { db } from "../firebase/firebase_config";
@@ -161,79 +170,132 @@ export default function AddCharacters({ route, navigation }) {
   };
 
   return (
-    <View>
-      <Text>AddCharacters</Text>
-      <TextInput
-        placeholder="Name (full)"
-        onChangeText={nameInputHandler}
-        value={enteredName}
-      />
-      <TextInput
-        placeholder="Profession"
-        onChangeText={professionInputHandler}
-        value={enteredProfession}
-      />
-      <TextInput
-        placeholder="Allies"
-        onChangeText={alliesInputHandler}
-        value={enteredAllies}
-      />
-      <TextInput
-        placeholder="Enemies"
-        onChangeText={enemiesInputHandler}
-        value={enteredEnemies}
-      />
-      <TextInput
-        placeholder="Associates"
-        onChangeText={associatesInputHandler}
-        value={enteredAssociates}
-      />
-      <TextInput
-        placeholder="Weapons"
-        onChangeText={weaponsInputHandler}
-        value={enteredWeapons}
-      />
-      <TextInput
-        placeholder="Vehicle/Mount(s)"
-        onChangeText={vehicles_MountsInputHandler}
-        value={enteredVehicle_Mounts}
-      />
-      <TextInput
-        placeholder="Affiliation"
-        onChangeText={affiliationInputHandler}
-        value={enteredAffiliation}
-      />
-      <TextInput
-        placeholder="Abilities"
-        onChangeText={abilitiesInputHandler}
-        value={enteredAbilities}
-      />
-      <TextInput
-        placeholder="Race/People"
-        onChangeText={race_PeopleInputHandler}
-        value={enteredRace_People}
-      />
-      <TextInput
-        placeholder="Bio/Notes"
-        onChangeText={bio_NotesInputHandler}
-        value={enteredBio_Notes}
-      />
-      <Button title="Pick an image from camera roll" onPress={pickImage} />
-      {/*///maybe add ability to remove the image you picked (for ending with no image?) */}
-      {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-      )}
-      <Button title="Submit" onPress={setChar} />
-      <Button
-        title="Cancel"
-        onPress={() =>
-          navigation.navigate("CharactersPage", {
-            title: title,
-            titleId: titleId,
-          })
-        }
-      />
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <TextInput
+          placeholder="Name (full)"
+          onChangeText={nameInputHandler}
+          value={enteredName}
+          style={styles.inputContainer}
+        />
+        <TextInput
+          placeholder="Profession"
+          onChangeText={professionInputHandler}
+          value={enteredProfession}
+          style={styles.inputContainer}
+        />
+        <TextInput
+          placeholder="Allies"
+          onChangeText={alliesInputHandler}
+          value={enteredAllies}
+          style={styles.inputContainer}
+        />
+        <TextInput
+          placeholder="Enemies"
+          onChangeText={enemiesInputHandler}
+          value={enteredEnemies}
+          style={styles.inputContainer}
+        />
+        <TextInput
+          placeholder="Associates"
+          onChangeText={associatesInputHandler}
+          value={enteredAssociates}
+          style={styles.inputContainer}
+        />
+        <TextInput
+          placeholder="Weapons"
+          onChangeText={weaponsInputHandler}
+          value={enteredWeapons}
+          style={styles.inputContainer}
+        />
+        <TextInput
+          placeholder="Vehicle/Mount(s)"
+          onChangeText={vehicles_MountsInputHandler}
+          value={enteredVehicle_Mounts}
+          style={styles.inputContainer}
+        />
+        <TextInput
+          placeholder="Affiliation"
+          onChangeText={affiliationInputHandler}
+          value={enteredAffiliation}
+          style={styles.inputContainer}
+        />
+        <TextInput
+          placeholder="Abilities"
+          onChangeText={abilitiesInputHandler}
+          value={enteredAbilities}
+          style={styles.inputContainer}
+        />
+        <TextInput
+          placeholder="Race/People"
+          onChangeText={race_PeopleInputHandler}
+          value={enteredRace_People}
+          style={styles.inputContainer}
+        />
+        <TextInput
+          placeholder="Bio/Notes"
+          onChangeText={bio_NotesInputHandler}
+          value={enteredBio_Notes}
+          style={styles.inputContainer}
+          multiline={true}
+        />
+        {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
+        <View style={styles.buttonContainer}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={pickImage}
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.buttonText}>
+              Pick an image from camera roll
+            </Text>
+          </Pressable>
+        </View>
+        {/*///maybe add ability to remove the image you picked (for ending with no image?) */}
+        <View style={styles.image}>
+          {image && (
+            <Image
+              source={{ uri: image }}
+              style={{ width: 200, height: 200 }}
+            />
+          )}
+        </View>
+
+        {/* <Button title="Submit" onPress={setChar} /> */}
+        <View style={styles.buttonContainer}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={setChar}
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.buttonText}>Submit</Text>
+          </Pressable>
+        </View>
+        {/* <Button
+          title="Cancel"
+          onPress={() =>
+            navigation.navigate("CharactersPage", {
+              title: title,
+              titleId: titleId,
+            })
+          }
+        /> */}
+        <View style={styles.buttonContainer}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={() =>
+              navigation.navigate("CharactersPage", {
+                title: title,
+                titleId: titleId,
+              })
+            }
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.buttonText}>Cancel</Text>
+          </Pressable>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -245,7 +307,8 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     backgroundColor: "#c4dfe6",
-    aspectRatio: 7,
+    minWidth: 200,
+    maxWidth: 400,
     margin: 5,
     padding: 5,
     borderRadius: 4,
