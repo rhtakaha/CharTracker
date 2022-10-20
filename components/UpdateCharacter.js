@@ -46,6 +46,7 @@ export default function UpdateCharacter({ route, navigation }) {
 
   const [userUID, setUserUID] = useState("");
   const [image, setImage] = useState(null);
+  const [imageDeleted, setImageDeleted] = useState(false);
 
   function newNameInputHandler(updatedName) {
     setNewName(updatedName);
@@ -126,6 +127,7 @@ export default function UpdateCharacter({ route, navigation }) {
 
     if (!result.cancelled) {
       setImage(result.uri);
+      setImageDeleted(false);
     }
   };
 
@@ -177,20 +179,39 @@ export default function UpdateCharacter({ route, navigation }) {
       console.log("type of ogDocRef: " + typeof ogDocRef);
       console.log("WEAPONS: " + newWeapons);
       updateCharImage();
-      updateDoc(ogDocRef, {
-        Name: newName,
-        Profession: newProfession,
-        Allies: newAllies,
-        Enemies: newEnemies,
-        Associates: newAssociates,
-        Weapons: newWeapons,
-        Vehicles_Mounts: newVehicles_Mounts,
-        Affiliation: newAffiliation,
-        Abilities: newAbilities,
-        Race_People: newRace_People,
-        Bio_Notes: newBio_Notes,
-        image: image ? image : CHARINFO.image,
-      });
+      if (imageDeleted) {
+        //if the image has been deleted and not replaced
+        updateDoc(ogDocRef, {
+          Name: newName,
+          Profession: newProfession,
+          Allies: newAllies,
+          Enemies: newEnemies,
+          Associates: newAssociates,
+          Weapons: newWeapons,
+          Vehicles_Mounts: newVehicles_Mounts,
+          Affiliation: newAffiliation,
+          Abilities: newAbilities,
+          Race_People: newRace_People,
+          Bio_Notes: newBio_Notes,
+          image: "",
+        });
+      } else {
+        //if the image has been replaced or not deleted/maintained
+        updateDoc(ogDocRef, {
+          Name: newName,
+          Profession: newProfession,
+          Allies: newAllies,
+          Enemies: newEnemies,
+          Associates: newAssociates,
+          Weapons: newWeapons,
+          Vehicles_Mounts: newVehicles_Mounts,
+          Affiliation: newAffiliation,
+          Abilities: newAbilities,
+          Race_People: newRace_People,
+          Bio_Notes: newBio_Notes,
+          image: image ? image : CHARINFO.image,
+        });
+      }
     }
 
     navigation.navigate("CharactersPage", { title: title, titleId: titleId });
@@ -223,6 +244,7 @@ export default function UpdateCharacter({ route, navigation }) {
   const deleteCharImage = async () => {
     deleteImage(userUID, charId);
     setImage(null);
+    setImageDeleted(true);
   };
 
   function removePickedImage() {

@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   Pressable,
   Image,
 } from "react-native";
@@ -21,7 +20,6 @@ import {
 } from "firebase/firestore/lite";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImage } from "../shared";
 var uuid = require("uuid");
@@ -30,7 +28,6 @@ export default function AddTitle({ navigation }) {
   const [enteredTitle, setEnteredTitle] = useState("");
   const [userUID, setUserUID] = useState("");
   const [image, setImage] = useState(null);
-  const [recImage, setRecImage] = useState(null);
 
   function titleInputHandler(enteredText) {
     setEnteredTitle(enteredText);
@@ -74,22 +71,6 @@ export default function AddTitle({ navigation }) {
     }
   };
 
-  // const uploadImage = async (newId) => {
-  //   const storage = getStorage();
-  //   console.log("starting image upload\n");
-  //   // Create a reference to where the image should go in firebase storage
-  //   const imageRef = ref(storage, userUID + "/" + newId);
-  //   console.log("references created");
-  //   try {
-  //     uploadBytes(imageRef, await uriToBlob(image)).then((snapshot) => {
-  //       console.log("Uploaded a blob or file!");
-  //     });
-  //     Image.prefetch(image);
-  //   } catch (error) {
-  //     console.log("ERROR UPLOADING: " + error);
-  //   }
-  // };
-
   // first check if the collection exists,
   //    -if it does then add to it
   //    -if not then make a collection and add the document
@@ -125,20 +106,6 @@ export default function AddTitle({ navigation }) {
           image: image ? image : "",
         });
       }
-      // const docRef = doc(db, userUID, enteredTitle);
-      // const docSnap = await getDoc(docRef);
-
-      // if (docSnap.exists()) {
-      //   //name already exists so is invalid
-      //   console.log("Invalid name. Already in use.");
-      //   //TODO: add some sort of alert/popup in app
-      // } else {
-      //   console.log("Adding new Title");
-      //   await setDoc(doc(db, userUID, enteredTitle), {
-      //     Title: enteredTitle,
-      //     id: enteredTitle, //might be bad but should work TODO: see what the key/id per item is for
-      //   });
-      // }
     } else {
       //the collection doesn't exist so make it and add the first title
       const newId = uuid.v4();
@@ -168,7 +135,6 @@ export default function AddTitle({ navigation }) {
           style={styles.input}
         />
       </View>
-      {/* <Button title="Enter" onPress={setData} /> */}
       <View style={styles.buttonContainer}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}
@@ -201,12 +167,6 @@ export default function AddTitle({ navigation }) {
           <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
         )}
       </View>
-
-      {/* <Button title="Upload image?" onPress={uploadImage} /> */}
-      {/* <Button title="Download image?" onPress={downloadImage} />
-      {recImage && (
-        <Image source={{ uri: recImage }} style={{ width: 200, height: 200 }} />
-      )} */}
     </View>
   );
 }

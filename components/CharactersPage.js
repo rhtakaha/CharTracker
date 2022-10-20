@@ -99,7 +99,7 @@ export default function CharactersPage({ route, navigation }) {
           console.log("cached: " + (await checkCached(CHARS[item].image)));
           if ((await checkCached(CHARS[item].image)) !== "memory") {
             //if image is not cached then download and cache
-            console.log("downloading");
+            console.log("downloading for " + CHARS[item].Name);
             await downloadImage(userUID, CHARS[item].id);
           }
         }

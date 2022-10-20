@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   Image,
   ScrollView,
   Pressable,
@@ -32,7 +31,6 @@ export default function CharacterDetails({ route, navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      //getCharDetails(userUID, title, name, setDETAILS);
       (async () => {
         docInfo = await getCharDetails(userUID, titleId, charId, setDETAILS); //so that we wait to get the info we need for later
         console.log("docInfo: " + docInfo[0] + " and " + docInfo[1]);
@@ -53,16 +51,6 @@ export default function CharacterDetails({ route, navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView>
-        {/* <Button
-          title="Update Character"
-          onPress={() =>
-            navigation.navigate("UpdateCharacter", {
-              title: title,
-              titleId: titleId,
-              charId: charId,
-            })
-          }
-        /> */}
         <View style={styles.buttonContainer}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}
@@ -78,7 +66,6 @@ export default function CharacterDetails({ route, navigation }) {
             <Text style={styles.buttonText}>Update Character</Text>
           </Pressable>
         </View>
-        {/* <Button title="Delete Character" onPress={startConfirmationHandler} /> */}
         <View style={styles.buttonContainer}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}

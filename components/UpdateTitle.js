@@ -31,6 +31,7 @@ export default function UpdateTitle({ route, navigation }) {
   const [TITLEINFO, setTITLEINFO] = useState({});
   const [userUID, setUserUID] = useState("");
   const [image, setImage] = useState(null);
+  const [imageDeleted, setImageDeleted] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -57,6 +58,7 @@ export default function UpdateTitle({ route, navigation }) {
 
     if (!result.cancelled) {
       setImage(result.uri);
+      setImageDeleted(false);
     }
   };
 
@@ -94,7 +96,7 @@ export default function UpdateTitle({ route, navigation }) {
 
   const updateNewTitle = async () => {
     console.log("starting to update Title");
-    if (newTitle !== "" || image !== null) {
+    if (newTitle !== "" || image !== null || imageDeleted) {
       //if at least one is being changed
 
       const q = query(collection(db, userUID), where("Title", "==", newTitle));
@@ -110,10 +112,19 @@ export default function UpdateTitle({ route, navigation }) {
         console.log("Adding new Title");
         console.log("Updating " + ogDocRef + " and there it is");
         updateTitleImage();
-        updateDoc(ogDocRef, {
-          Title: newTitle ? newTitle : TITLEINFO.Title,
-          image: image ? image : TITLEINFO.image,
-        });
+        console.log("/nHAS THE IMAGE BEEN DELETED: " + imageDeleted);
+        if (!imageDeleted) {
+          updateDoc(ogDocRef, {
+            Title: newTitle ? newTitle : TITLEINFO.Title,
+            image: image ? image : TITLEINFO.Title,
+          });
+        } else {
+          // if the image was deleted and not replaced
+          updateDoc(ogDocRef, {
+            Title: newTitle ? newTitle : TITLEINFO.Title,
+            image: "",
+          });
+        }
       }
     }
 
@@ -130,9 +141,10 @@ export default function UpdateTitle({ route, navigation }) {
 
   const deleteTitleImage = async () => {
     deleteImage(userUID, titleId);
-    updateDoc(ogDocRef, {
-      image: "",
-    });
+    // updateDoc(ogDocRef, {
+    //   image: "",
+    // });
+    setImageDeleted(true);
   };
 
   function removePickedImage() {
