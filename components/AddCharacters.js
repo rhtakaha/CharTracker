@@ -168,6 +168,10 @@ export default function AddCharacters({ route, navigation }) {
     navigation.navigate("CharactersPage", { title: title, titleId: titleId });
   };
 
+  function removePickedImage() {
+    setImage(null);
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -238,6 +242,15 @@ export default function AddCharacters({ route, navigation }) {
           style={styles.inputContainer}
           multiline={true}
         />
+        <View style={styles.buttonContainer}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={removePickedImage}
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.buttonText}>Remove picked image</Text>
+          </Pressable>
+        </View>
         <View style={styles.buttonContainer}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}

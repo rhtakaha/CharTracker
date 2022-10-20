@@ -189,7 +189,7 @@ export default function UpdateCharacter({ route, navigation }) {
         Abilities: newAbilities,
         Race_People: newRace_People,
         Bio_Notes: newBio_Notes,
-        image: image ? image : "",
+        image: image ? image : CHARINFO.image,
       });
     }
 
@@ -224,6 +224,10 @@ export default function UpdateCharacter({ route, navigation }) {
     deleteImage(userUID, charId);
     setImage(null);
   };
+
+  function removePickedImage() {
+    setImage(null);
+  }
 
   return (
     <View style={styles.container}>
@@ -338,6 +342,15 @@ export default function UpdateCharacter({ route, navigation }) {
           </Pressable>
         </View>
         {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
+        <View style={styles.buttonContainer}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={removePickedImage}
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.buttonText}>Remove picked image</Text>
+          </Pressable>
+        </View>
         <View style={styles.buttonContainer}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}
