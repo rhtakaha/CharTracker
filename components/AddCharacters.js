@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   TextInput,
   Image,
   ScrollView,
@@ -239,7 +238,6 @@ export default function AddCharacters({ route, navigation }) {
           style={styles.inputContainer}
           multiline={true}
         />
-        {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
         <View style={styles.buttonContainer}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}
@@ -261,7 +259,6 @@ export default function AddCharacters({ route, navigation }) {
           )}
         </View>
 
-        {/* <Button title="Submit" onPress={setChar} /> */}
         <View style={styles.buttonContainer}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}
@@ -271,15 +268,6 @@ export default function AddCharacters({ route, navigation }) {
             <Text style={styles.buttonText}>Submit</Text>
           </Pressable>
         </View>
-        {/* <Button
-          title="Cancel"
-          onPress={() =>
-            navigation.navigate("CharactersPage", {
-              title: title,
-              titleId: titleId,
-            })
-          }
-        /> */}
         <View style={styles.buttonContainer}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}
