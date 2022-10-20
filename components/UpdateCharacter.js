@@ -181,7 +181,7 @@ export default function UpdateCharacter({ route, navigation }) {
       updateCharImage();
       if (imageDeleted) {
         //if the image has been deleted and not replaced
-        updateDoc(ogDocRef, {
+        await updateDoc(ogDocRef, {
           Name: newName,
           Profession: newProfession,
           Allies: newAllies,
@@ -197,7 +197,7 @@ export default function UpdateCharacter({ route, navigation }) {
         });
       } else {
         //if the image has been replaced or not deleted/maintained
-        updateDoc(ogDocRef, {
+        await updateDoc(ogDocRef, {
           Name: newName,
           Profession: newProfession,
           Allies: newAllies,
