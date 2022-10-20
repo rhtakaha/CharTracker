@@ -135,6 +135,10 @@ export default function UpdateTitle({ route, navigation }) {
     });
   };
 
+  function removePickedImage() {
+    setImage(null);
+  }
+
   return (
     <View style={styles.container}>
       {/* <Text >{"Current Title: " + TITLEINFO.Title}</Text> */}
@@ -164,6 +168,15 @@ export default function UpdateTitle({ route, navigation }) {
         </Pressable>
       </View>
       {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
+      <View style={styles.buttonContainer}>
+        <Pressable
+          android_ripple={{ color: "#dddddd" }}
+          onPress={removePickedImage}
+          style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+        >
+          <Text style={styles.buttonText}>Remove picked image</Text>
+        </Pressable>
+      </View>
       <View style={styles.buttonContainer}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}

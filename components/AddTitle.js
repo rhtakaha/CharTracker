@@ -153,6 +153,11 @@ export default function AddTitle({ navigation }) {
     }
     navigation.navigate("Titles");
   };
+
+  function removePickedImage() {
+    setImage(null);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
@@ -171,6 +176,15 @@ export default function AddTitle({ navigation }) {
           style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
         >
           <Text style={styles.buttonText}>Enter</Text>
+        </Pressable>
+      </View>
+      <View style={styles.buttonContainer}>
+        <Pressable
+          android_ripple={{ color: "#dddddd" }}
+          onPress={removePickedImage}
+          style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+        >
+          <Text style={styles.buttonText}>Remove picked image</Text>
         </Pressable>
       </View>
       <View style={styles.buttonContainer}>
