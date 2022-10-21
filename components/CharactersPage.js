@@ -4,20 +4,9 @@ import {
   View,
   SafeAreaView,
   FlatList,
-  StatusBar,
-  Button,
   Pressable,
-  Image,
 } from "react-native";
-import {
-  collection,
-  getDocs,
-  getDoc,
-  doc,
-  query,
-  where,
-  deleteDoc,
-} from "firebase/firestore/lite";
+import { collection, getDocs, doc, deleteDoc } from "firebase/firestore/lite";
 import CharacterItem from "./CharacterItem";
 import React, { useState } from "react";
 import { db } from "../firebase/firebase_config";
@@ -27,7 +16,6 @@ import Confirmation from "./Confirmation";
 import { checkCached } from "../shared";
 import { downloadImage } from "../shared";
 
-//var id = "";
 export default function CharactersPage({ route, navigation }) {
   const { title, titleId } = route.params;
   const [CHARS, setCHARS] = useState({});
@@ -76,15 +64,6 @@ export default function CharactersPage({ route, navigation }) {
     if (userUID !== "") {
       console.log("starting to get the data from " + title);
 
-      // const q = query(collection(db, userUID), where("Title", "==", title));
-      // const querySnapshot = await getDocs(q);
-      // id = "";
-      // querySnapshot.forEach((doc) => {
-      //   // doc.data() is never undefined for query doc snapshots
-      //   id = doc.data().id;
-      // });
-      // console.log("id: " + id);
-
       const titleCol = collection(db, userUID, titleId, "Characters");
       const titleSnapshot = await getDocs(titleCol);
 
@@ -131,10 +110,6 @@ export default function CharactersPage({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Button
-        title="Add Character"
-        onPress={() => navigation.navigate("AddCharacters", { title: title })}
-      /> */}
       <View style={styles.buttonContainer}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}
@@ -149,10 +124,6 @@ export default function CharactersPage({ route, navigation }) {
           <Text style={styles.buttonText}>Add Character</Text>
         </Pressable>
       </View>
-      {/* <Button
-        title="Update Title"
-        onPress={() => navigation.navigate("UpdateTitle", { title: title })}
-      /> */}
       <View style={styles.buttonContainer}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}
@@ -167,7 +138,6 @@ export default function CharactersPage({ route, navigation }) {
           <Text style={styles.buttonText}>Update Title</Text>
         </Pressable>
       </View>
-      {/* <Button title="Delete Title" onPress={startConfirmationHandler} /> */}
       <View style={styles.buttonContainer}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}

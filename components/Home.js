@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  Button,
-  TextInput,
-  StyleSheet,
-  Pressable,
-} from "react-native";
+import { View, Text, TextInput, StyleSheet, Pressable } from "react-native";
 import React, { useState } from "react";
 import { auth } from "../firebase/firebase_config";
 import {
@@ -69,7 +62,6 @@ export default function Home({ navigation }) {
         />
       </View>
 
-      {/* <Button title="Register" onPress={registerUser} /> */}
       <View style={styles.registerButtonBody}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}
@@ -80,7 +72,6 @@ export default function Home({ navigation }) {
         </Pressable>
       </View>
       {isSignedIn === true ? (
-        // <Button title="Sign Out" onPress={signOutUser} />
         <View style={styles.signOutButtonBody}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}
@@ -91,7 +82,6 @@ export default function Home({ navigation }) {
           </Pressable>
         </View>
       ) : (
-        // <Button title="Sign In" onPress={signInUser} />
         <View style={styles.signInButtonBody}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}
@@ -102,10 +92,6 @@ export default function Home({ navigation }) {
           </Pressable>
         </View>
       )}
-      {/* <Button
-        title="Go to Titles"
-        onPress={() => navigation.navigate("Titles")}
-      /> */}
       <View style={styles.toTitlesButton}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}

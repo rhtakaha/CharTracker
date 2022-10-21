@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Modal, Button, Pressable } from "react-native";
+import { StyleSheet, Text, View, Modal, Pressable } from "react-native";
 import React from "react";
 
 export default function Confirmation(props) {
@@ -13,8 +13,6 @@ export default function Confirmation(props) {
         <View style={styles.container}>
           <Text style={styles.message}>{props.text}</Text>
           <View style={styles.buttonsContainer}>
-            {/* <Button title="Confirm" onPress={props.onConfirm} />
-            <Button title="Cancel" onPress={props.onCancel} /> */}
             <View style={[styles.confirmButtonBody, props.confirmColor]}>
               <Pressable
                 android_ripple={{ color: "#dddddd" }}
