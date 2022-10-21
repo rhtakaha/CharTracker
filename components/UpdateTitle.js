@@ -3,7 +3,6 @@ import {
   Text,
   TextInput,
   View,
-  Button,
   Image,
   Pressable,
 } from "react-native";
@@ -69,15 +68,6 @@ export default function UpdateTitle({ route, navigation }) {
   const getTitleDetails = async () => {
     if (userUID !== "") {
       console.log("starting to get the Title data from " + title);
-
-      // const q = query(collection(db, userUID), where("Title", "==", title));
-      // const querySnapshot = await getDocs(q);
-      // var id = "";
-      // querySnapshot.forEach((doc) => {
-      //   // doc.data() is never undefined for query doc snapshots
-      //   id = doc.data().id;
-      // });
-      // console.log("id: " + id);
       ogDocRef = doc(db, userUID, titleId);
       const docSnap = await getDoc(ogDocRef);
 
@@ -153,7 +143,6 @@ export default function UpdateTitle({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* <Text >{"Current Title: " + TITLEINFO.Title}</Text> */}
       <View style={styles.image}>
         {TITLEINFO.image && (
           <Image
@@ -169,7 +158,6 @@ export default function UpdateTitle({ route, navigation }) {
         style={styles.inputContainer}
       />
 
-      {/* <Button title="Delete current image" onPress={deleteTitleImage} /> */}
       <View style={styles.buttonContainer}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}
@@ -179,7 +167,7 @@ export default function UpdateTitle({ route, navigation }) {
           <Text style={styles.buttonText}>Delete current image</Text>
         </Pressable>
       </View>
-      {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
+
       <View style={styles.buttonContainer}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}
@@ -204,7 +192,6 @@ export default function UpdateTitle({ route, navigation }) {
         )}
       </View>
 
-      {/* <Button title="Enter" onPress={updateNewTitle} /> */}
       <View style={styles.buttonContainer}>
         <Pressable
           android_ripple={{ color: "#dddddd" }}

@@ -4,13 +4,10 @@ import {
   FlatList,
   SafeAreaView,
   StyleSheet,
-  StatusBar,
-  Button,
   Pressable,
-  Image,
 } from "react-native";
 import React, { useState } from "react";
-import { collection, getDocs, getDoc, doc } from "firebase/firestore/lite";
+import { collection, getDocs } from "firebase/firestore/lite";
 import { db } from "../firebase/firebase_config";
 import TitleItem from "./TitleItem";
 import { useFocusEffect } from "@react-navigation/native";
@@ -55,7 +52,7 @@ export default function Titles({ navigation }) {
         console.log("collected data:");
         console.log(JSON.stringify(DATA) + "\n");
         //now that we have all the title data
-        //TODO: check if each image is in the cache, if not then download and add to cache
+        //check if each image is in the cache, if not then download and add to cache
         for (const item in DATA) {
           console.log("Image: " + DATA[item].image);
           if (DATA[item].image !== undefined) {

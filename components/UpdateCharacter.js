@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   TextInput,
   Image,
   ScrollView,
@@ -13,7 +12,6 @@ import { db } from "../firebase/firebase_config";
 import {
   collection,
   getDocs,
-  getDoc,
   doc,
   updateDoc,
   query,
@@ -137,16 +135,6 @@ export default function UpdateCharacter({ route, navigation }) {
     var continueGoing = true;
     if (newName !== CHARINFO.Name) {
       console.log("checking if the new name is valid " + newName);
-      // const queryTitleID = query(
-      //   collection(db, userUID),
-      //   where("Title", "==", title)
-      // );
-      // const titleSnapshot = await getDocs(queryTitleID);
-      // var id = "";
-      // titleSnapshot.forEach((doc) => {
-      //   // doc.data() is never undefined for query doc snapshots
-      //   id = doc.data().id;
-      // });
       const q = query(
         collection(db, userUID, titleId, "Characters"),
         where("Name", "==", newName)
@@ -343,7 +331,6 @@ export default function UpdateCharacter({ route, navigation }) {
           value={newRace_People}
           style={styles.inputContainer}
         />
-        {/*TODO: make it so long text is more readable as you enter it- PROBABLY ALSO APPLIES TO AddCharacter */}
         <TextInput
           placeholder={
             CHARINFO.Bio_Notes === "" ? "Bio/Notes" : CHARINFO.Bio_Notes
@@ -353,7 +340,6 @@ export default function UpdateCharacter({ route, navigation }) {
           multiline={true}
           style={styles.inputContainer}
         />
-        {/* <Button title="Delete current image" onPress={deleteCharImage} /> */}
         <View style={styles.buttonContainer}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}
@@ -363,7 +349,6 @@ export default function UpdateCharacter({ route, navigation }) {
             <Text style={styles.buttonText}>Delete current image</Text>
           </Pressable>
         </View>
-        {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
         <View style={styles.buttonContainer}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}
@@ -384,7 +369,6 @@ export default function UpdateCharacter({ route, navigation }) {
             </Text>
           </Pressable>
         </View>
-        {/*///maybe add ability to remove the image you picked (for ending with no image?) */}
         <View style={styles.image}>
           {image && (
             <Image
@@ -393,8 +377,6 @@ export default function UpdateCharacter({ route, navigation }) {
             />
           )}
         </View>
-
-        {/* <Button title="Submit" onPress={updateChar} /> */}
         <View style={styles.buttonContainer}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}
@@ -404,16 +386,7 @@ export default function UpdateCharacter({ route, navigation }) {
             <Text style={styles.buttonText}>Submit</Text>
           </Pressable>
         </View>
-        {/* <Button
-          title="Cancel"
-          onPress={() =>
-            navigation.navigate("CharacterDetails", {
-              title: title,
-              titleId: titleId,
-              charId: charId,
-            })
-          }
-        /> */}
+
         <View style={styles.buttonContainer}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}
