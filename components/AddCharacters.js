@@ -22,6 +22,12 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo, uploadImage } from "../shared";
 import * as ImagePicker from "expo-image-picker";
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+} from "react-native-google-mobile-ads";
+import { SafeAreaView } from "react-native-safe-area-context";
 var uuid = require("uuid");
 
 export default function AddCharacters({ route, navigation }) {
@@ -173,130 +179,139 @@ export default function AddCharacters({ route, navigation }) {
   }
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <TextInput
-          placeholder="Name (full)"
-          onChangeText={nameInputHandler}
-          value={enteredName}
-          style={styles.inputContainer}
-        />
-        <TextInput
-          placeholder="Profession"
-          onChangeText={professionInputHandler}
-          value={enteredProfession}
-          style={styles.inputContainer}
-        />
-        <TextInput
-          placeholder="Allies"
-          onChangeText={alliesInputHandler}
-          value={enteredAllies}
-          style={styles.inputContainer}
-        />
-        <TextInput
-          placeholder="Enemies"
-          onChangeText={enemiesInputHandler}
-          value={enteredEnemies}
-          style={styles.inputContainer}
-        />
-        <TextInput
-          placeholder="Associates"
-          onChangeText={associatesInputHandler}
-          value={enteredAssociates}
-          style={styles.inputContainer}
-        />
-        <TextInput
-          placeholder="Weapons"
-          onChangeText={weaponsInputHandler}
-          value={enteredWeapons}
-          style={styles.inputContainer}
-        />
-        <TextInput
-          placeholder="Vehicle/Mount(s)"
-          onChangeText={vehicles_MountsInputHandler}
-          value={enteredVehicle_Mounts}
-          style={styles.inputContainer}
-        />
-        <TextInput
-          placeholder="Affiliation"
-          onChangeText={affiliationInputHandler}
-          value={enteredAffiliation}
-          style={styles.inputContainer}
-        />
-        <TextInput
-          placeholder="Abilities"
-          onChangeText={abilitiesInputHandler}
-          value={enteredAbilities}
-          style={styles.inputContainer}
-        />
-        <TextInput
-          placeholder="Race/People"
-          onChangeText={race_PeopleInputHandler}
-          value={enteredRace_People}
-          style={styles.inputContainer}
-        />
-        <TextInput
-          placeholder="Bio/Notes"
-          onChangeText={bio_NotesInputHandler}
-          value={enteredBio_Notes}
-          style={styles.inputContainer}
-          multiline={true}
-        />
-        <View style={styles.buttonContainer}>
-          <Pressable
-            android_ripple={{ color: "#dddddd" }}
-            onPress={removePickedImage}
-            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
-          >
-            <Text style={styles.buttonText}>Remove picked image</Text>
-          </Pressable>
-        </View>
-        <View style={styles.buttonContainer}>
-          <Pressable
-            android_ripple={{ color: "#dddddd" }}
-            onPress={pickImage}
-            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
-          >
-            <Text style={styles.buttonText}>
-              Pick an image from camera roll
-            </Text>
-          </Pressable>
-        </View>
-        {/*///maybe add ability to remove the image you picked (for ending with no image?) */}
-        <View style={styles.image}>
-          {image && (
-            <Image
-              source={{ uri: image }}
-              style={{ width: 200, height: 200 }}
-            />
-          )}
-        </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView>
+        <View style={styles.container}>
+          <TextInput
+            placeholder="Name (full)"
+            onChangeText={nameInputHandler}
+            value={enteredName}
+            style={styles.inputContainer}
+          />
+          <TextInput
+            placeholder="Profession"
+            onChangeText={professionInputHandler}
+            value={enteredProfession}
+            style={styles.inputContainer}
+          />
+          <TextInput
+            placeholder="Allies"
+            onChangeText={alliesInputHandler}
+            value={enteredAllies}
+            style={styles.inputContainer}
+          />
+          <TextInput
+            placeholder="Enemies"
+            onChangeText={enemiesInputHandler}
+            value={enteredEnemies}
+            style={styles.inputContainer}
+          />
+          <TextInput
+            placeholder="Associates"
+            onChangeText={associatesInputHandler}
+            value={enteredAssociates}
+            style={styles.inputContainer}
+          />
+          <TextInput
+            placeholder="Weapons"
+            onChangeText={weaponsInputHandler}
+            value={enteredWeapons}
+            style={styles.inputContainer}
+          />
+          <TextInput
+            placeholder="Vehicle/Mount(s)"
+            onChangeText={vehicles_MountsInputHandler}
+            value={enteredVehicle_Mounts}
+            style={styles.inputContainer}
+          />
+          <TextInput
+            placeholder="Affiliation"
+            onChangeText={affiliationInputHandler}
+            value={enteredAffiliation}
+            style={styles.inputContainer}
+          />
+          <TextInput
+            placeholder="Abilities"
+            onChangeText={abilitiesInputHandler}
+            value={enteredAbilities}
+            style={styles.inputContainer}
+          />
+          <TextInput
+            placeholder="Race/People"
+            onChangeText={race_PeopleInputHandler}
+            value={enteredRace_People}
+            style={styles.inputContainer}
+          />
+          <TextInput
+            placeholder="Bio/Notes"
+            onChangeText={bio_NotesInputHandler}
+            value={enteredBio_Notes}
+            style={styles.inputContainer}
+            multiline={true}
+          />
+          <View style={styles.buttonContainer}>
+            <Pressable
+              android_ripple={{ color: "#dddddd" }}
+              onPress={removePickedImage}
+              style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+            >
+              <Text style={styles.buttonText}>Remove picked image</Text>
+            </Pressable>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Pressable
+              android_ripple={{ color: "#dddddd" }}
+              onPress={pickImage}
+              style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+            >
+              <Text style={styles.buttonText}>
+                Pick an image from camera roll
+              </Text>
+            </Pressable>
+          </View>
+          {/*///maybe add ability to remove the image you picked (for ending with no image?) */}
+          <View style={styles.image}>
+            {image && (
+              <Image
+                source={{ uri: image }}
+                style={{ width: 200, height: 200 }}
+              />
+            )}
+          </View>
 
-        <View style={styles.buttonContainer}>
-          <Pressable
-            android_ripple={{ color: "#dddddd" }}
-            onPress={setChar}
-            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
-          >
-            <Text style={styles.buttonText}>Submit</Text>
-          </Pressable>
+          <View style={styles.buttonContainer}>
+            <Pressable
+              android_ripple={{ color: "#dddddd" }}
+              onPress={setChar}
+              style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+            >
+              <Text style={styles.buttonText}>Submit</Text>
+            </Pressable>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Pressable
+              android_ripple={{ color: "#dddddd" }}
+              onPress={() =>
+                navigation.navigate("CharactersPage", {
+                  title: title,
+                  titleId: titleId,
+                })
+              }
+              style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+            >
+              <Text style={styles.buttonText}>Cancel</Text>
+            </Pressable>
+          </View>
         </View>
-        <View style={styles.buttonContainer}>
-          <Pressable
-            android_ripple={{ color: "#dddddd" }}
-            onPress={() =>
-              navigation.navigate("CharactersPage", {
-                title: title,
-                titleId: titleId,
-              })
-            }
-            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
-          >
-            <Text style={styles.buttonText}>Cancel</Text>
-          </Pressable>
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+      <BannerAd
+        unitId={TestIds.BANNER}
+        size={BannerAdSize.LARGE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+        }}
+      />
+    </SafeAreaView>
   );
 }
 

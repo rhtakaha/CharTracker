@@ -54,6 +54,7 @@ export default function Titles({ navigation }) {
         //now that we have all the title data
         //check if each image is in the cache, if not then download and add to cache
         for (const item in DATA) {
+          console.log("item: " + item);
           console.log("Image: " + DATA[item].image);
           if (DATA[item].image !== undefined) {
             //if there is an associated image
