@@ -50,27 +50,34 @@ export default function Titles({ navigation }) {
 
         setDATA(dummySnapshot.docs.map((doc) => doc.data()));
         console.log("collected data:");
-        console.log(JSON.stringify(DATA) + "\n");
-        //now that we have all the title data
-        //check if each image is in the cache, if not then download and add to cache
-        for (const item in DATA) {
-          console.log("item: " + item);
-          console.log("Image: " + DATA[item].image);
-          if (DATA[item].image !== undefined) {
-            //if there is an associated image
 
-            console.log("cached: " + (await checkCached(DATA[item].image)));
-            if ((await checkCached(DATA[item].image)) !== "memory") {
-              //if image is not cached then download and cache
-              console.log("downloading");
-              await downloadImage(userUID, DATA[item].id);
-            }
-          }
-        }
+        //await downloadAsNeeded();
       } else {
         // 0 documents means no collection so will need to make the collection with the first title, nothing to be done here
       }
     }
+  };
+  //now that we have all the title data
+  //check if each image is in the cache, if not then download and add to cache
+  //TODO: NEED TO TEST IF THIS WORKS OR NOT- USE PHYSICAL DEVICE UNLESS EMULATOR is reliable for internet things
+  const downloadAsNeeded = async () => {
+    console.log(JSON.stringify(DATA) + "\n starting download check");
+    for (const item in DATA) {
+      console.log("item: " + item);
+      console.log("Image: " + DATA[item].image);
+      if (DATA[item].image !== undefined) {
+        //if there is an associated image
+
+        console.log("cached: " + (await checkCached(DATA[item].image)));
+        const c = await checkCached(DATA[item].image);
+        if (c !== "memory" && c !== "disk") {
+          //if image is not cached then download and cache
+          console.log("downloading");
+          await downloadImage(userUID, DATA[item].id);
+        }
+      }
+    }
+    console.log("downloads complete");
   };
 
   useFocusEffect(
@@ -82,6 +89,12 @@ export default function Titles({ navigation }) {
     React.useCallback(() => {
       getTitles();
     }, [userUID])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      downloadAsNeeded();
+    }, [DATA])
   );
 
   return (

@@ -42,6 +42,12 @@ export default function CharactersPage({ route, navigation }) {
     }, [])
   );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      downloadAsNeeded();
+    }, [CHARS])
+  );
+
   function goToCharDetails(givenId) {
     //passes the title and the character name onto details page
     navigation.navigate("CharacterDetails", {
@@ -69,21 +75,28 @@ export default function CharactersPage({ route, navigation }) {
 
       setCHARS(titleSnapshot.docs.map((doc) => doc.data()));
       console.log("finished collecting data");
-      console.log(CHARS);
-      for (const item in CHARS) {
-        console.log("Image: " + CHARS[item].image);
-        if (CHARS[item].image !== undefined) {
-          //if there is an associated image
+    }
+  };
 
-          console.log("cached: " + (await checkCached(CHARS[item].image)));
-          if ((await checkCached(CHARS[item].image)) !== "memory") {
-            //if image is not cached then download and cache
-            console.log("downloading for " + CHARS[item].Name);
-            await downloadImage(userUID, CHARS[item].id);
-          }
+  const downloadAsNeeded = async () => {
+    console.log("checking for downloads");
+    console.log(CHARS);
+    for (const item in CHARS) {
+      console.log("Image: " + CHARS[item].image);
+      if (CHARS[item].image !== undefined) {
+        //if there is an associated image
+
+        console.log("cached: " + (await checkCached(CHARS[item].image)));
+        if ((await checkCached(CHARS[item].image)) !== "memory") {
+          //if image is not cached then download and cache
+          console.log("downloading for " + CHARS[item].Name);
+          CHARS[item].image = await downloadImage(userUID, CHARS[item].id);
+          console.log("\n" + CHARS[item].image);
+          console.log("end");
         }
       }
     }
+    console.log("finished downloads");
   };
 
   const deleteTitle = async () => {

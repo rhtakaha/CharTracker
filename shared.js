@@ -17,6 +17,7 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { Image } from "react-native";
+import { async } from "@firebase/util";
 
 //function that gets the signed in user's UID and puts it into the state variable
 export const getAuthenticationInfo = async (setUserUID) => {
@@ -98,8 +99,58 @@ export const downloadImage = async (userUID, Id /*, setImage*/) => {
   console.log("sending req");
   const img = await getDownloadURL(imageRef);
   console.log("received: " + img);
+
+  // This can be downloaded directly:
+  const xhr = new XMLHttpRequest();
+  xhr.responseType = "blob";
+  xhr.onload = (event) => {
+    const blob = xhr.response;
+
+    let base64data = 0;
+    const fileReaderInstance = new FileReader();
+    fileReaderInstance.readAsDataURL(blob);
+    fileReaderInstance.onload = () => {
+      base64data = fileReaderInstance.result;
+      console.log(base64data);
+    };
+    return base64data;
+    // const uri = await blobToUri(blob);
+    // console.log("uri: " + uri);
+
+    // const img = URL.createObjectURL(blob);
+    // Image.prefetch(img);
+    // console.log("img: " + img);
+    // return img;
+  };
+  xhr.open("GET", img);
+  xhr.send();
+
   //setImage(img);
-  Image.prefetch(img);
+  // Image.prefetch(img);
+  // return img;
+};
+
+const blobToUri = (blob) => {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function () {
+      // return the uri
+      console.log("uri created!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      resolve(xhr.response);
+    };
+
+    xhr.onerror = function () {
+      // something went wrong
+      reject(new Error("blobToUri failed"));
+    };
+
+    // this helps us get a uri???///
+    xhr.responseType = "";
+
+    xhr.open("GET", blob, true);
+    xhr.send(null);
+  });
 };
 
 export const deleteImage = async (userUID, Id) => {
