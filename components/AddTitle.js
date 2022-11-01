@@ -21,9 +21,11 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
 import * as ImagePicker from "expo-image-picker";
-import { uploadImage } from "../shared";
+import { uploadImage, downloadImage } from "../shared";
 var uuid = require("uuid");
-
+///
+let submitting = false;
+let newId; ///
 export default function AddTitle({ navigation }) {
   const [enteredTitle, setEnteredTitle] = useState("");
   const [userUID, setUserUID] = useState("");
@@ -39,6 +41,28 @@ export default function AddTitle({ navigation }) {
     }, [])
   );
 
+  ///
+  useFocusEffect(
+    React.useCallback(() => {
+      uploadDoc();
+    }, [image])
+  );
+
+  //method to upload which should be called after the image is changed and only happen just after the submit button was pressed
+  const uploadDoc = async () => {
+    console.log("TRIGGERED: " + submitting);
+    if (submitting) {
+      await setDoc(doc(db, userUID, newId), {
+        Title: enteredTitle,
+        id: newId,
+        image: image ? image : "",
+      });
+      console.log("uploaded doc with proper https link");
+      submitting = false;
+      navigation.navigate("Titles");
+    }
+  };
+  ///
   const isTitleIdUnique = async (db, userUID, newId) => {
     const docRef = doc(db, userUID, newId);
     const docSnap = await getDoc(docRef);
@@ -90,7 +114,7 @@ export default function AddTitle({ navigation }) {
         //TODO: add some sort of alert/popup in app
       } else {
         //keep generating ids until get a unique one (should be first time but to be sure)
-        let newId;
+
         do {
           newId = uuid.v4();
         } while (!(await isTitleIdUnique(db, userUID, newId)));
@@ -98,27 +122,31 @@ export default function AddTitle({ navigation }) {
         //now that we have the id we can construct
         console.log("Adding new Title");
         if (image !== null) {
-          await uploadImage(userUID, image, newId);
+          await uploadImage(userUID, image, newId); ///
+          setImage(await downloadImage(userUID, newId));
+          submitting = true; ///
         }
-        await setDoc(doc(db, userUID, newId), {
-          Title: enteredTitle,
-          id: newId,
-          image: image ? image : "",
-        });
+        // await setDoc(doc(db, userUID, newId), {
+        //   Title: enteredTitle,
+        //   id: newId,
+        //   image: image ? image : "",
+        // });
       }
     } else {
       //the collection doesn't exist so make it and add the first title
       const newId = uuid.v4();
       if (image !== null) {
-        await uploadImage(userUID, image, newId);
+        await uploadImage(userUID, image, newId); ///
+        setImage(await downloadImage(userUID, newId));
+        submitting = true; ///
       }
-      await setDoc(doc(db, userUID, newId), {
-        Title: enteredTitle,
-        id: newId,
-        image: image ? image : "",
-      });
+      // await setDoc(doc(db, userUID, newId), {
+      //   Title: enteredTitle,
+      //   id: newId,
+      //   image: image ? image : "",
+      // });
     }
-    navigation.navigate("Titles");
+    console.log("HERE SUBMIT IS: " + submitting);
   };
 
   function removePickedImage() {

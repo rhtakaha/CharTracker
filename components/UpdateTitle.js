@@ -19,11 +19,12 @@ import {
 } from "firebase/firestore/lite";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
-import { uploadImage } from "../shared";
+import { uploadImage, downloadImage } from "../shared";
 import * as ImagePicker from "expo-image-picker";
 import { deleteImage } from "../shared";
 
 var ogDocRef = "";
+let submitting = false;
 export default function UpdateTitle({ route, navigation }) {
   const { title, titleId } = route.params;
   const [newTitle, setNewTitle] = useState("");
@@ -103,37 +104,67 @@ export default function UpdateTitle({ route, navigation }) {
         console.log("Updating " + ogDocRef + " and there it is");
         updateTitleImage();
         console.log("/nHAS THE IMAGE BEEN DELETED: " + imageDeleted);
-        if (!imageDeleted) {
-          updateDoc(ogDocRef, {
-            Title: newTitle ? newTitle : TITLEINFO.Title,
-            image: image ? image : TITLEINFO.Title,
-          });
-        } else {
-          // if the image was deleted and not replaced
-          updateDoc(ogDocRef, {
-            Title: newTitle ? newTitle : TITLEINFO.Title,
-            image: "",
-          });
-        }
+        // if (!imageDeleted) {
+        //   updateDoc(ogDocRef, {
+        //     Title: newTitle ? newTitle : TITLEINFO.Title,
+        //     image: image ? image : TITLEINFO.Title,
+        //   });
+        // } else {
+        //   // if the image was deleted and not replaced
+        //   updateDoc(ogDocRef, {
+        //     Title: newTitle ? newTitle : TITLEINFO.Title,
+        //     image: "",
+        //   });
+        // }
       }
     }
 
     //take us out to the titles page
-    navigation.navigate("Titles");
+    //navigation.navigate("Titles");
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      updateDocument();
+    }, [image])
+  );
+
+  //method to upload which should be called after the image is changed and only happen just after the submit button was pressed
+  const updateDocument = async () => {
+    console.log("TRIGGERED update: " + submitting);
+    if (submitting) {
+      if (!imageDeleted) {
+        await updateDoc(ogDocRef, {
+          Title: newTitle ? newTitle : TITLEINFO.Title,
+          image: image ? image : TITLEINFO.Title,
+        });
+      } else {
+        // if the image was deleted and not replaced
+        await updateDoc(ogDocRef, {
+          Title: newTitle ? newTitle : TITLEINFO.Title,
+          image: "",
+        });
+      }
+      console.log("updated doc with proper https link image");
+      submitting = false;
+      navigation.navigate("Titles");
+    }
   };
 
   const updateTitleImage = async () => {
     if (image !== null) {
       //add/replace title image
       await uploadImage(userUID, image, titleId);
+      setImage(await downloadImage(userUID, titleId));
+      submitting = true;
     }
   };
 
   const deleteTitleImage = async () => {
     deleteImage(userUID, titleId);
-    // updateDoc(ogDocRef, {
-    //   image: "",
-    // });
+    updateDoc(ogDocRef, {
+      image: "",
+    });
     setImageDeleted(true);
   };
 

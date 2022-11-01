@@ -57,28 +57,30 @@ export default function Titles({ navigation }) {
       }
     }
   };
+
+  //TODO: USE react-native-fast-image instead since should be simpler
   //now that we have all the title data
   //check if each image is in the cache, if not then download and add to cache
   //TODO: NEED TO TEST IF THIS WORKS OR NOT- USE PHYSICAL DEVICE UNLESS EMULATOR is reliable for internet things
-  const downloadAsNeeded = async () => {
-    console.log(JSON.stringify(DATA) + "\n starting download check");
-    for (const item in DATA) {
-      console.log("item: " + item);
-      console.log("Image: " + DATA[item].image);
-      if (DATA[item].image !== undefined) {
-        //if there is an associated image
+  // const downloadAsNeeded = async () => {
+  //   console.log(JSON.stringify(DATA) + "\n starting download check");
+  //   for (const item in DATA) {
+  //     console.log("item: " + item);
+  //     console.log("Image: " + DATA[item].image);
+  //     if (DATA[item].image !== undefined) {
+  //       //if there is an associated image
 
-        console.log("cached: " + (await checkCached(DATA[item].image)));
-        const c = await checkCached(DATA[item].image);
-        if (c !== "memory" && c !== "disk") {
-          //if image is not cached then download and cache
-          console.log("downloading");
-          await downloadImage(userUID, DATA[item].id);
-        }
-      }
-    }
-    console.log("downloads complete");
-  };
+  //       console.log("cached: " + (await checkCached(DATA[item].image)));
+  //       const c = await checkCached(DATA[item].image);
+  //       if (c !== "memory" && c !== "disk") {
+  //         //if image is not cached then download and cache
+  //         console.log("downloading");
+  //         await downloadImage(userUID, DATA[item].id);
+  //       }
+  //     }
+  //   }
+  //   console.log("downloads complete");
+  // };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -91,11 +93,11 @@ export default function Titles({ navigation }) {
     }, [userUID])
   );
 
-  useFocusEffect(
-    React.useCallback(() => {
-      downloadAsNeeded();
-    }, [DATA])
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     downloadAsNeeded();
+  //   }, [DATA])
+  // );
 
   return (
     <SafeAreaView style={styles.container}>

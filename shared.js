@@ -56,14 +56,18 @@ export const uploadImage = async (userUID, image, newId) => {
   // Create a reference to where the image should go in firebase storage
   const imageRef = ref(storage, userUID + "/" + newId);
   console.log("references created");
+  let success = true;
   try {
-    uploadBytes(imageRef, await uriToBlob(image)).then((snapshot) => {
+    await uploadBytes(imageRef, await uriToBlob(image)).then((snapshot) => {
       console.log("Uploaded a blob or file!");
+      return success;
     });
     Image.prefetch(image);
   } catch (error) {
     console.log("ERROR UPLOADING: " + error);
+    success = false;
   }
+  return success;
 };
 
 const uriToBlob = (uri) => {
@@ -100,30 +104,31 @@ export const downloadImage = async (userUID, Id /*, setImage*/) => {
   const img = await getDownloadURL(imageRef);
   console.log("received: " + img);
 
-  // This can be downloaded directly:
-  const xhr = new XMLHttpRequest();
-  xhr.responseType = "blob";
-  xhr.onload = (event) => {
-    const blob = xhr.response;
+  return img;
+  // // This can be downloaded directly:
+  // const xhr = new XMLHttpRequest();
+  // xhr.responseType = "blob";
+  // xhr.onload = (event) => {
+  //   const blob = xhr.response;
 
-    let base64data = 0;
-    const fileReaderInstance = new FileReader();
-    fileReaderInstance.readAsDataURL(blob);
-    fileReaderInstance.onload = () => {
-      base64data = fileReaderInstance.result;
-      console.log(base64data);
-    };
-    return base64data;
-    // const uri = await blobToUri(blob);
-    // console.log("uri: " + uri);
+  //   let base64data = 0;
+  //   const fileReaderInstance = new FileReader();
+  //   fileReaderInstance.readAsDataURL(blob);
+  //   fileReaderInstance.onload = () => {
+  //     base64data = fileReaderInstance.result;
+  //     console.log(base64data);
+  //   };
+  //   return base64data;
+  //   // const uri = await blobToUri(blob);
+  //   // console.log("uri: " + uri);
 
-    // const img = URL.createObjectURL(blob);
-    // Image.prefetch(img);
-    // console.log("img: " + img);
-    // return img;
-  };
-  xhr.open("GET", img);
-  xhr.send();
+  //   // const img = URL.createObjectURL(blob);
+  //   // Image.prefetch(img);
+  //   // console.log("img: " + img);
+  //   // return img;
+  // };
+  // xhr.open("GET", img);
+  // xhr.send();
 
   //setImage(img);
   // Image.prefetch(img);

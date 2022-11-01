@@ -20,7 +20,7 @@ import {
   where,
 } from "firebase/firestore/lite";
 import { useFocusEffect } from "@react-navigation/native";
-import { getAuthenticationInfo, uploadImage } from "../shared";
+import { getAuthenticationInfo, uploadImage, downloadImage } from "../shared";
 import * as ImagePicker from "expo-image-picker";
 import {
   BannerAd,
@@ -46,7 +46,7 @@ export default function AddCharacters({ route, navigation }) {
   const [enteredBio_Notes, setEnteredBio_Notes] = useState("");
 
   const [userUID, setUserUID] = useState("");
-  const [image, setImage] = useState(null);
+  let [image, setImage] = useState(null);
 
   function nameInputHandler(enteredText) {
     setEnteredName(enteredText);
@@ -111,6 +111,7 @@ export default function AddCharacters({ route, navigation }) {
     console.log(result);
 
     if (!result.cancelled) {
+      //TODO: REMOVE?
       setImage(result.uri);
     }
   };
@@ -149,9 +150,21 @@ export default function AddCharacters({ route, navigation }) {
 
         //have the id so create the character
         console.log("Adding new Character");
+        console.log("newId: " + newId);
+        let m = 0;
         if (image !== null) {
-          await uploadImage(userUID, image, newId);
+          // await uploadImage(userUID, image, newId).then(async () => {
+          //   setImage(await downloadImage(userUID, newId)); //TODO: ASK BJ IN CLASS ABOUT HOW TO PROPERLY SEQUENCE THIS///
+          // });
+          //TODO: Immediately download so can set the url in the document to be the https url to the cloud and not to local storage
+          const v = await uploadImage(userUID, image, newId);
+          console.log("V: " + v);
+          m = await downloadImage(userUID, newId);
+          console.log("M: " + m);
+          setImage(m);
         }
+        console.log("m is: " + m);
+        console.log("image is: " + image);
         await setDoc(doc(db, userUID, titleId, "Characters", newId), {
           Name: enteredName,
           id: newId,

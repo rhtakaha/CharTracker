@@ -229,6 +229,7 @@ export default function UpdateCharacter({ route, navigation }) {
     }
   };
 
+  //TODO: ALSO NEED TO DELETE image FROM DOCUMENT
   const deleteCharImage = async () => {
     deleteImage(userUID, charId);
     setImage(null);

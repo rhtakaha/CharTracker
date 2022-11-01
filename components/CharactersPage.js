@@ -99,6 +99,7 @@ export default function CharactersPage({ route, navigation }) {
     console.log("finished downloads");
   };
 
+  //TODO: MAKE IT DELETE THE ASSOCIATED IMAGES TOO
   const deleteTitle = async () => {
     //first check if the collection is empty, if so just delete
     const col = collection(db, userUID, titleId, "Characters");
