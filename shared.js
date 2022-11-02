@@ -103,6 +103,7 @@ export const downloadImage = async (userUID, Id /*, setImage*/) => {
   console.log("sending req");
   const img = await getDownloadURL(imageRef);
   console.log("received: " + img);
+  await Image.prefetch(img); // unnecessary?
 
   return img;
   // // This can be downloaded directly:
