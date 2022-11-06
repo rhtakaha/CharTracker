@@ -87,13 +87,13 @@ export default function CharactersPage({ route, navigation }) {
         //if there is an associated image
 
         console.log("cached: " + (await checkCached(CHARS[item].image)));
-        if ((await checkCached(CHARS[item].image)) !== "memory") {
-          //if image is not cached then download and cache
-          console.log("downloading for " + CHARS[item].Name);
-          CHARS[item].image = await downloadImage(userUID, CHARS[item].id);
-          console.log("\n" + CHARS[item].image);
-          console.log("end");
-        }
+        // if ((await checkCached(CHARS[item].image)) !== "memory") {
+        //   //if image is not cached then download and cache
+        //   console.log("downloading for " + CHARS[item].Name);
+        //   CHARS[item].image = await downloadImage(userUID, CHARS[item].id);
+        //   console.log("\n" + CHARS[item].image);
+        //   console.log("end");
+        // }
       }
     }
     console.log("finished downloads");

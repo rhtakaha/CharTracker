@@ -30,6 +30,9 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 var uuid = require("uuid");
 
+///
+let submitting = false;
+let newId; ///
 export default function AddCharacters({ route, navigation }) {
   const { title, titleId } = route.params;
 
@@ -98,6 +101,39 @@ export default function AddCharacters({ route, navigation }) {
     }, [])
   );
 
+  ///
+  useFocusEffect(
+    React.useCallback(() => {
+      uploadCharacter();
+    }, [image])
+  );
+
+  //method to upload which should be called after the image is changed and only happen just after the submit button was pressed
+  const uploadCharacter = async () => {
+    console.log("TRIGGERED on char: " + submitting);
+    if (submitting) {
+      console.log("newId: " + newId);
+      await setDoc(doc(db, userUID, titleId, "Characters", newId), {
+        Name: enteredName,
+        id: newId,
+        Profession: enteredProfession,
+        Allies: enteredAllies,
+        Enemies: enteredEnemies,
+        Associates: enteredAssociates,
+        Weapons: enteredWeapons,
+        Vehicles_Mounts: enteredVehicle_Mounts,
+        Affiliation: enteredAffiliation,
+        Abilities: enteredAbilities,
+        Race_People: enteredRace_People,
+        Bio_Notes: enteredBio_Notes,
+        image: image ? image : "",
+      });
+      console.log("uploaded character with proper https link");
+      submitting = false;
+      navigation.navigate("CharactersPage", { title: title, titleId: titleId });
+    }
+  };
+
   //function taken from the expo documentation: https://docs.expo.dev/versions/latest/sdk/imagepicker/?redirected
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -143,7 +179,6 @@ export default function AddCharacters({ route, navigation }) {
       } else {
         //valid name
         //keep generating ids until get a unique one (should be first time but to be sure)
-        let newId;
         do {
           newId = uuid.v4();
         } while (!(await isCharIdUnique(db, userUID, newId)));
@@ -151,40 +186,17 @@ export default function AddCharacters({ route, navigation }) {
         //have the id so create the character
         console.log("Adding new Character");
         console.log("newId: " + newId);
-        let m = 0;
+
         if (image !== null) {
-          // await uploadImage(userUID, image, newId).then(async () => {
-          //   setImage(await downloadImage(userUID, newId)); //TODO: ASK BJ IN CLASS ABOUT HOW TO PROPERLY SEQUENCE THIS///
-          // });
-          //TODO: Immediately download so can set the url in the document to be the https url to the cloud and not to local storage
-          const v = await uploadImage(userUID, image, newId);
-          console.log("V: " + v);
-          m = await downloadImage(userUID, newId);
-          console.log("M: " + m);
-          setImage(m);
+          //  Immediately download so can set the url in the document to be the https url to the cloud and not to local storage
+          await uploadImage(userUID, image, newId);
+          setImage(await downloadImage(userUID, newId));
+          submitting = true;
         }
-        console.log("m is: " + m);
-        console.log("image is: " + image);
-        await setDoc(doc(db, userUID, titleId, "Characters", newId), {
-          Name: enteredName,
-          id: newId,
-          Profession: enteredProfession,
-          Allies: enteredAllies,
-          Enemies: enteredEnemies,
-          Associates: enteredAssociates,
-          Weapons: enteredWeapons,
-          Vehicles_Mounts: enteredVehicle_Mounts,
-          Affiliation: enteredAffiliation,
-          Abilities: enteredAbilities,
-          Race_People: enteredRace_People,
-          Bio_Notes: enteredBio_Notes,
-          image: image ? image : "",
-        });
       }
     } else {
       console.log("NAME REQUIRED, NOT ENTERED");
     }
-    navigation.navigate("CharactersPage", { title: title, titleId: titleId });
   };
 
   function removePickedImage() {

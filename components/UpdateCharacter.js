@@ -23,10 +23,12 @@ import {
   getCharDetails,
   uploadImage,
   deleteImage,
+  downloadImage,
 } from "../shared";
 import * as ImagePicker from "expo-image-picker";
 
 var ogDocInfo = [];
+let submitting = false;
 export default function UpdateCharacter({ route, navigation }) {
   const { title, titleId, charId } = route.params;
   const [newName, setNewName] = useState("");
@@ -111,6 +113,62 @@ export default function UpdateCharacter({ route, navigation }) {
     }, [CHARINFO])
   );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      updateCharacter();
+    }, [image])
+  );
+
+  //method to upload which should be called after the image is changed and only happen just after the submit button was pressed
+  const updateCharacter = async () => {
+    console.log("TRIGGERED update char: " + submitting);
+    if (submitting) {
+      const ogDocRef = doc(
+        db,
+        userUID,
+        ogDocInfo[0],
+        "Characters",
+        ogDocInfo[1]
+      );
+      if (imageDeleted) {
+        //if the image has been deleted and not replaced
+        await updateDoc(ogDocRef, {
+          Name: newName,
+          Profession: newProfession,
+          Allies: newAllies,
+          Enemies: newEnemies,
+          Associates: newAssociates,
+          Weapons: newWeapons,
+          Vehicles_Mounts: newVehicles_Mounts,
+          Affiliation: newAffiliation,
+          Abilities: newAbilities,
+          Race_People: newRace_People,
+          Bio_Notes: newBio_Notes,
+          image: "",
+        });
+      } else {
+        //if the image has been replaced or not deleted (thus maintained)
+        await updateDoc(ogDocRef, {
+          Name: newName,
+          Profession: newProfession,
+          Allies: newAllies,
+          Enemies: newEnemies,
+          Associates: newAssociates,
+          Weapons: newWeapons,
+          Vehicles_Mounts: newVehicles_Mounts,
+          Affiliation: newAffiliation,
+          Abilities: newAbilities,
+          Race_People: newRace_People,
+          Bio_Notes: newBio_Notes,
+          image: image ? image : CHARINFO.image,
+        });
+      }
+      console.log("updated char with proper https link image");
+      submitting = false;
+      navigation.navigate("CharactersPage", { title: title, titleId: titleId });
+    }
+  };
+
   //function taken from the expo documentation: https://docs.expo.dev/versions/latest/sdk/imagepicker/?redirected
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -167,42 +225,40 @@ export default function UpdateCharacter({ route, navigation }) {
       console.log("type of ogDocRef: " + typeof ogDocRef);
       console.log("WEAPONS: " + newWeapons);
       updateCharImage();
-      if (imageDeleted) {
-        //if the image has been deleted and not replaced
-        await updateDoc(ogDocRef, {
-          Name: newName,
-          Profession: newProfession,
-          Allies: newAllies,
-          Enemies: newEnemies,
-          Associates: newAssociates,
-          Weapons: newWeapons,
-          Vehicles_Mounts: newVehicles_Mounts,
-          Affiliation: newAffiliation,
-          Abilities: newAbilities,
-          Race_People: newRace_People,
-          Bio_Notes: newBio_Notes,
-          image: "",
-        });
-      } else {
-        //if the image has been replaced or not deleted/maintained
-        await updateDoc(ogDocRef, {
-          Name: newName,
-          Profession: newProfession,
-          Allies: newAllies,
-          Enemies: newEnemies,
-          Associates: newAssociates,
-          Weapons: newWeapons,
-          Vehicles_Mounts: newVehicles_Mounts,
-          Affiliation: newAffiliation,
-          Abilities: newAbilities,
-          Race_People: newRace_People,
-          Bio_Notes: newBio_Notes,
-          image: image ? image : CHARINFO.image,
-        });
-      }
+      // if (imageDeleted) {
+      //   //if the image has been deleted and not replaced
+      //   await updateDoc(ogDocRef, {
+      //     Name: newName,
+      //     Profession: newProfession,
+      //     Allies: newAllies,
+      //     Enemies: newEnemies,
+      //     Associates: newAssociates,
+      //     Weapons: newWeapons,
+      //     Vehicles_Mounts: newVehicles_Mounts,
+      //     Affiliation: newAffiliation,
+      //     Abilities: newAbilities,
+      //     Race_People: newRace_People,
+      //     Bio_Notes: newBio_Notes,
+      //     image: "",
+      //   });
+      // } else {
+      //   //if the image has been replaced or not deleted/maintained
+      //   await updateDoc(ogDocRef, {
+      //     Name: newName,
+      //     Profession: newProfession,
+      //     Allies: newAllies,
+      //     Enemies: newEnemies,
+      //     Associates: newAssociates,
+      //     Weapons: newWeapons,
+      //     Vehicles_Mounts: newVehicles_Mounts,
+      //     Affiliation: newAffiliation,
+      //     Abilities: newAbilities,
+      //     Race_People: newRace_People,
+      //     Bio_Notes: newBio_Notes,
+      //     image: image ? image : CHARINFO.image,
+      //   });
+      // }
     }
-
-    navigation.navigate("CharactersPage", { title: title, titleId: titleId });
   };
 
   //put what has already been added into each field so user can truly update and not just overwrite
@@ -226,6 +282,12 @@ export default function UpdateCharacter({ route, navigation }) {
   const updateCharImage = async () => {
     if (image !== null) {
       await uploadImage(userUID, image, charId);
+      setImage(await downloadImage(userUID, charId));
+      submitting = true;
+    } else if (imageDeleted) {
+      //if the image is deleted then we need to trigger the document update on submit
+      submitting = true;
+      updateCharacter();
     }
   };
 
