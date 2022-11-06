@@ -23,9 +23,9 @@ import { getAuthenticationInfo } from "../shared";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImage, downloadImage } from "../shared";
 var uuid = require("uuid");
-///
+
 let submitting = false;
-let newId; ///
+let newId;
 export default function AddTitle({ navigation }) {
   const [enteredTitle, setEnteredTitle] = useState("");
   const [userUID, setUserUID] = useState("");
@@ -41,7 +41,6 @@ export default function AddTitle({ navigation }) {
     }, [])
   );
 
-  ///
   useFocusEffect(
     React.useCallback(() => {
       uploadDoc();
@@ -62,7 +61,7 @@ export default function AddTitle({ navigation }) {
       navigation.navigate("Titles");
     }
   };
-  ///
+
   const isTitleIdUnique = async (db, userUID, newId) => {
     const docRef = doc(db, userUID, newId);
     const docSnap = await getDoc(docRef);
@@ -122,9 +121,9 @@ export default function AddTitle({ navigation }) {
         //now that we have the id we can construct
         console.log("Adding new Title");
         if (image !== null) {
-          await uploadImage(userUID, image, newId); ///
+          await uploadImage(userUID, image, newId);
           setImage(await downloadImage(userUID, newId));
-          submitting = true; ///
+          submitting = true;
         }
         // await setDoc(doc(db, userUID, newId), {
         //   Title: enteredTitle,
@@ -136,9 +135,9 @@ export default function AddTitle({ navigation }) {
       //the collection doesn't exist so make it and add the first title
       const newId = uuid.v4();
       if (image !== null) {
-        await uploadImage(userUID, image, newId); ///
+        await uploadImage(userUID, image, newId);
         setImage(await downloadImage(userUID, newId));
-        submitting = true; ///
+        submitting = true;
       }
       // await setDoc(doc(db, userUID, newId), {
       //   Title: enteredTitle,

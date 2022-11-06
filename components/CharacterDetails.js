@@ -43,6 +43,7 @@ export default function CharacterDetails({ route, navigation }) {
     }, [])
   );
 
+  //TODO: ALSO NEED TO DELETE THE IMAGE
   const deleteCharacter = async () => {
     deleteDoc(doc(db, userUID, docInfo[0], "Characters", docInfo[1]));
     navigation.navigate("CharactersPage", { title: title, titleId: titleId });
