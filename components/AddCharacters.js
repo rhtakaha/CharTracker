@@ -192,6 +192,27 @@ export default function AddCharacters({ route, navigation }) {
           await uploadImage(userUID, image, newId);
           setImage(await downloadImage(userUID, newId));
           submitting = true;
+        } else {
+          // if no image selected
+          await setDoc(doc(db, userUID, titleId, "Characters", newId), {
+            Name: enteredName,
+            id: newId,
+            Profession: enteredProfession,
+            Allies: enteredAllies,
+            Enemies: enteredEnemies,
+            Associates: enteredAssociates,
+            Weapons: enteredWeapons,
+            Vehicles_Mounts: enteredVehicle_Mounts,
+            Affiliation: enteredAffiliation,
+            Abilities: enteredAbilities,
+            Race_People: enteredRace_People,
+            Bio_Notes: enteredBio_Notes,
+            image: "",
+          });
+          navigation.navigate("CharactersPage", {
+            title: title,
+            titleId: titleId,
+          });
         }
       }
     } else {

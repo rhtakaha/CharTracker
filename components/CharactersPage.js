@@ -11,7 +11,7 @@ import CharacterItem from "./CharacterItem";
 import React, { useState } from "react";
 import { db } from "../firebase/firebase_config";
 import { useFocusEffect } from "@react-navigation/native";
-import { getAuthenticationInfo } from "../shared";
+import { deleteImage, getAuthenticationInfo } from "../shared";
 import Confirmation from "./Confirmation";
 import { checkCached } from "../shared";
 import { downloadImage } from "../shared";
@@ -110,10 +110,13 @@ export default function CharactersPage({ route, navigation }) {
       const titleSnapshot = await getDocs(titleCol);
       titleSnapshot.forEach((document) => {
         var charId = document.data().id;
+        // delete character docs and images
         deleteDoc(doc(db, userUID, titleId, "Characters", charId));
+        deleteImage(userUID, charId);
       });
-      //now delete the title itself
+      //now delete the title itself and the image
       deleteDoc(doc(db, userUID, titleId));
+      deleteImage(userUID, titleId);
     } else {
       //empty Title so simply delete
       deleteDoc(doc(db, userUID, titleId));

@@ -124,6 +124,13 @@ export default function AddTitle({ navigation }) {
           await uploadImage(userUID, image, newId);
           setImage(await downloadImage(userUID, newId));
           submitting = true;
+        } else {
+          await setDoc(doc(db, userUID, newId), {
+            Title: enteredTitle,
+            id: newId,
+            image: "",
+          });
+          navigation.navigate("Titles");
         }
         // await setDoc(doc(db, userUID, newId), {
         //   Title: enteredTitle,

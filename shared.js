@@ -165,15 +165,18 @@ export const deleteImage = async (userUID, Id) => {
   // Create a reference to the image in firebase storage
   const imageRef = ref(storage, userUID + "/" + Id);
 
-  deleteObject(imageRef)
-    .then(() => {
-      // File deleted successfully
-      console.log("successfully deleted");
-    })
-    .catch((error) => {
-      // Uh-oh, an error occurred!
-      console.log(error);
-    });
+  if (imageRef) {
+    deleteObject(imageRef)
+      .then(() => {
+        // File deleted successfully
+        console.log("successfully deleted");
+      })
+      .catch((error) => {
+        // Uh-oh, an error occurred!
+        /// would hit here if there was no image associated
+        console.log(error);
+      });
+  }
 };
 
 export async function checkCached(imageURL) {

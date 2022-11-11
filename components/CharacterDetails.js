@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { getAuthenticationInfo } from "../shared";
+import { deleteImage, getAuthenticationInfo } from "../shared";
 import { getCharDetails } from "../shared";
 import { deleteDoc, doc } from "firebase/firestore/lite";
 import { db } from "../firebase/firebase_config";
@@ -43,9 +43,10 @@ export default function CharacterDetails({ route, navigation }) {
     }, [])
   );
 
-  //TODO: ALSO NEED TO DELETE THE IMAGE
+  //delete character and image associated if there is one
   const deleteCharacter = async () => {
     deleteDoc(doc(db, userUID, docInfo[0], "Characters", docInfo[1]));
+    deleteImage(userUID, docInfo[1]);
     navigation.navigate("CharactersPage", { title: title, titleId: titleId });
   };
 
