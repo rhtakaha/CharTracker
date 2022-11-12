@@ -14,6 +14,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo } from "../shared";
 import { downloadImage } from "../shared";
 import { checkCached } from "../shared";
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+} from "react-native-google-mobile-ads";
 
 export default function Titles({ navigation }) {
   const [DATA, setDATA] = useState({});
@@ -116,6 +121,15 @@ export default function Titles({ navigation }) {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
+      <View style={{ alignSelf: "center" }}>
+        <BannerAd
+          unitId={TestIds.BANNER}
+          size={BannerAdSize.LARGE_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 }

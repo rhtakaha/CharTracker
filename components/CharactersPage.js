@@ -15,6 +15,11 @@ import { deleteImage, getAuthenticationInfo } from "../shared";
 import Confirmation from "./Confirmation";
 import { checkCached } from "../shared";
 import { downloadImage } from "../shared";
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+} from "react-native-google-mobile-ads";
 
 export default function CharactersPage({ route, navigation }) {
   const { title, titleId } = route.params;
@@ -176,6 +181,15 @@ export default function CharactersPage({ route, navigation }) {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
+      <View style={{ alignSelf: "center" }}>
+        <BannerAd
+          unitId={TestIds.BANNER}
+          size={BannerAdSize.LARGE_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 }

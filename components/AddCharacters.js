@@ -22,11 +22,6 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { getAuthenticationInfo, uploadImage, downloadImage } from "../shared";
 import * as ImagePicker from "expo-image-picker";
-import {
-  BannerAd,
-  BannerAdSize,
-  TestIds,
-} from "react-native-google-mobile-ads";
 import { SafeAreaView } from "react-native-safe-area-context";
 var uuid = require("uuid");
 
@@ -350,13 +345,6 @@ export default function AddCharacters({ route, navigation }) {
           </View>
         </View>
       </ScrollView>
-      <BannerAd
-        unitId={TestIds.BANNER}
-        size={BannerAdSize.LARGE_BANNER}
-        requestOptions={{
-          requestNonPersonalizedAdsOnly: true,
-        }}
-      />
     </SafeAreaView>
   );
 }
