@@ -109,19 +109,24 @@ export default function Home({ navigation }) {
             <Text style={styles.toTitlesButtonText}>Go To Titles</Text>
           </Pressable>
         </View>
-        <BannerAd
-          unitId={TestIds.BANNER}
-          size={BannerAdSize.LARGE_BANNER}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
-          }}
-        />
+        <View style={styles.adContainer}>
+          <BannerAd
+            unitId={TestIds.BANNER}
+            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  adContainer: {
+    padding: 15,
+  },
   safe: {
     flex: 1,
   },

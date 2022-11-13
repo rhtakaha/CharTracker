@@ -184,7 +184,7 @@ export default function CharactersPage({ route, navigation }) {
       <View style={{ alignSelf: "center" }}>
         <BannerAd
           unitId={TestIds.BANNER}
-          size={BannerAdSize.LARGE_BANNER}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
           }}
