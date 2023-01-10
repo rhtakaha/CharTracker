@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  sendEmailVerification,
 } from "firebase/auth";
 import {
   BannerAd,
@@ -23,7 +24,12 @@ export default function Home({ navigation }) {
       .then((n) => {
         console.log(n);
         console.log("worked");
-        setIsSignedIn(true);
+
+        sendEmailVerification(auth.currentUser)
+          .then(() => {
+            // Email verification sent!
+          })
+          .catch((error) => alert(error.message));
       })
       .catch((error) => alert(error.message));
   };
@@ -32,9 +38,13 @@ export default function Home({ navigation }) {
     console.log("trying to sign in");
     signInWithEmailAndPassword(auth, email, password)
       .then((n) => {
-        setIsSignedIn(true);
-        console.log("signed in");
-        navigation.navigate("Titles");
+        if (auth.currentUser.emailVerified) {
+          setIsSignedIn(true);
+          console.log("signed in");
+          navigation.navigate("Titles");
+        } else {
+          alert("verify email first!!");
+        }
       })
       .catch((error) => alert(error.message));
   };
