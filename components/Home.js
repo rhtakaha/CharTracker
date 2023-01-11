@@ -81,7 +81,7 @@ export default function Home({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.inputContainer}>
           <TextInput
             placeholder="email"
@@ -158,7 +158,7 @@ export default function Home({ navigation }) {
             }}
           />
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -171,10 +171,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    flex: 1,
     backgroundColor: "#003B46",
     alignItems: "center",
     justifyContent: "center",
+    flexGrow: 1,
   },
   inputs: {
     color: "black",
