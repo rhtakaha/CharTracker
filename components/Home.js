@@ -14,6 +14,7 @@ import {
   signOut,
   sendEmailVerification,
   sendPasswordResetEmail,
+  deleteUser,
 } from "firebase/auth";
 import {
   BannerAd,
@@ -76,6 +77,20 @@ export default function Home({ navigation }) {
       .catch((error) => {
         alert(error.message);
         // ..
+      });
+  };
+
+  //TODO: ADD THE MODAL CONFIRMATION POP UP TO THIS
+  const deleteAccount = () => {
+    deleteUser(auth.currentUser)
+      .then(() => {
+        // User deleted.
+        setIsSignedIn(false);
+        alert("Account Deleted");
+      })
+      .catch((error) => {
+        // An error ocurred
+        // ...
       });
   };
 
@@ -147,6 +162,15 @@ export default function Home({ navigation }) {
             style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
           >
             <Text style={styles.toTitlesButtonText}>Forgot Password</Text>
+          </Pressable>
+        </View>
+        <View style={styles.toTitlesButton}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={deleteAccount}
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.toTitlesButtonText}>Delete Account</Text>
           </Pressable>
         </View>
         <View style={styles.adContainer}>
