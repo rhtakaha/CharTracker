@@ -1,4 +1,11 @@
-import { View, Text, TextInput, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Pressable,
+  ScrollView,
+} from "react-native";
 import React, { useState } from "react";
 import { auth } from "../firebase/firebase_config";
 import {
@@ -6,6 +13,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   sendEmailVerification,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import {
   BannerAd,
@@ -56,6 +64,19 @@ export default function Home({ navigation }) {
         console.log("signed out");
       })
       .catch((error) => alert(error.message));
+  };
+
+  const passReset = () => {
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        // Password reset email sent!
+        alert("Password reset email sent");
+        // ..
+      })
+      .catch((error) => {
+        alert(error.message);
+        // ..
+      });
   };
 
   return (
@@ -117,6 +138,15 @@ export default function Home({ navigation }) {
             style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
           >
             <Text style={styles.toTitlesButtonText}>Go To Titles</Text>
+          </Pressable>
+        </View>
+        <View style={styles.toTitlesButton}>
+          <Pressable
+            android_ripple={{ color: "#dddddd" }}
+            onPress={passReset}
+            style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
+          >
+            <Text style={styles.toTitlesButtonText}>Forgot Password</Text>
           </Pressable>
         </View>
         <View style={styles.adContainer}>
