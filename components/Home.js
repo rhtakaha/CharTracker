@@ -22,11 +22,21 @@ import {
   TestIds,
 } from "react-native-google-mobile-ads";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Confirmation from "./Confirmation";
 
 export default function Home({ navigation }) {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmationIsVisible, setConfirmationIsVisible] = useState(false);
+
+  function startConfirmationHandler() {
+    setConfirmationIsVisible(true);
+  }
+
+  function endConfirmationHandler() {
+    setConfirmationIsVisible(false);
+  }
 
   const registerUser = () => {
     createUserWithEmailAndPassword(auth, email, password)
@@ -80,7 +90,9 @@ export default function Home({ navigation }) {
       });
   };
 
-  //TODO: ADD THE MODAL CONFIRMATION POP UP TO THIS
+  //TODO: TEST
+  //  ADD THAT IT DELETES ALL THE ACCOUNT'S DATA IF NOT AUTOMATIC (TEST FIRST AND SEE IF IT DOES IT, BUT PROB NOT)
+  //    can use CharacterPage code to delete a title and just keep doing that until there are no titles in the collection
   const deleteAccount = () => {
     deleteUser(auth.currentUser)
       .then(() => {
@@ -167,12 +179,19 @@ export default function Home({ navigation }) {
         <View style={styles.toTitlesButton}>
           <Pressable
             android_ripple={{ color: "#dddddd" }}
-            onPress={deleteAccount}
+            onPress={startConfirmationHandler}
             style={({ pressed }) => pressed && styles.pressedButton} //if true returns this styling
           >
             <Text style={styles.toTitlesButtonText}>Delete Account</Text>
           </Pressable>
         </View>
+        <Confirmation
+          text="Are you sure you want to delete your account?"
+          visible={confirmationIsVisible}
+          onConfirm={deleteAccount}
+          onCancel={endConfirmationHandler}
+          confirmColor={{ backgroundColor: "red" }}
+        />
         <View style={styles.adContainer}>
           <BannerAd
             unitId={TestIds.BANNER}
